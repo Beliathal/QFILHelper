@@ -52,8 +52,6 @@ Public Class clsMsg
 
     Private Function LoadMessages() As Boolean
 
-        eCurLang = Language.RU_Lang
-
         Select Case eCurLang
             Case Language.EN_Lang : sUIMsg = File.ReadAllLines("english.msg")
             Case Language.RU_Lang : sUIMsg = File.ReadAllLines("russian.msg")
