@@ -38,6 +38,7 @@ The program was tested with: Android 9, LG V450PM, Qualcomm USB Driver v1.00.37,
 
 How to use:
 <ul>
+<li>Copy fh_loader.exe from your QFIL instalation to QFIL Helper folder</li>
 <li>Connect your phone to the PC in EDL mode</li>
 <li>Launch QFIL, connect to the phone and open Partition Manager</li>
 <li>Export Partition List File from QFIL and put it in QFIL Helper folder</li>
