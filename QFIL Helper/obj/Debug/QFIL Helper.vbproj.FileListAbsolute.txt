@@ -1,0 +1,24 @@
+C:\Users\Beliathal\AppData\Local\Temporary Projects\QFIL Helper\bin\Debug\QFIL Helper.exe.config
+C:\Users\Beliathal\AppData\Local\Temporary Projects\QFIL Helper\obj\Debug\QFIL_Helper.frmMain.resources
+C:\Users\Beliathal\AppData\Local\Temporary Projects\QFIL Helper\obj\Debug\QFIL_Helper.Resources.resources
+C:\Users\Beliathal\AppData\Local\Temporary Projects\QFIL Helper\obj\Debug\QFIL Helper.vbproj.GenerateResource.Cache
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.exe.config
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL_Helper.Resources.resources
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.vbproj.GenerateResource.Cache
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.exe
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.pdb
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.xml
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.exe
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.xml
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.pdb
+p:\Cache\Vomiter\Visual Studio 2013\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.vbprojResolveAssemblyReference.cache
+p:\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.exe.config
+p:\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.exe
+p:\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.xml
+p:\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.pdb
+p:\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.exe
+p:\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.pdb
+p:\Projects\QFIL Helper\QFIL Helper\bin\Debug\QFIL Helper.xml
+p:\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.vbprojResolveAssemblyReference.cache
+p:\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL_Helper.Resources.resources
+p:\Projects\QFIL Helper\QFIL Helper\obj\Debug\QFIL Helper.vbproj.GenerateResource.Cache
