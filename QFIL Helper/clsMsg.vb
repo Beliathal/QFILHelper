@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Text
 Imports System.Reflection
 Imports Microsoft.VisualBasic
 
@@ -6,7 +7,8 @@ Public Class clsMsg
 
     Private Enum Language As Byte
         EN_Lang = 0
-        RU_Lang = 1
+        RU_UTF8 = 1
+        RU_ANSI = 2
     End Enum
 
     Private sUIMsg() As String
@@ -14,60 +16,46 @@ Public Class clsMsg
 
     Public Function ParseArguments(ByRef sCurLang() As String) As Boolean
 
-        If sCurLang.Length = 0 Then _
-            ReDim sCurLang(0 To 0)
+        If sCurLang.Length = 0 Then
 
-        Select Case sCurLang(0)
+            eCurLang = Language.EN_Lang
+            LoadMessages()
+            Return True
 
-            Case "-en", "-EN", ""
-                eCurLang = Language.EN_Lang
-                LoadMessages(Language.EN_Lang)
+        ElseIf sCurLang(0).ToLower = "-ru" Then
 
-            Case "-ru", "-RU"
-                eCurLang = Language.RU_Lang
-                LoadMessages(Language.RU_Lang)
+            If sCurLang.Length = 1 Then
 
-            Case Else
+                eCurLang = Language.RU_ANSI
+                LoadMessages()
+                Return True
+
+            ElseIf sCurLang(1).ToLower = "-utf8" Then
+
+                Console.OutputEncoding = Encoding.UTF8
+                eCurLang = Language.RU_UTF8
+                LoadMessages()
+                Return True
+
+            Else
 
                 Console.WriteLine("Ivalid arguments")
                 Console.ReadKey(True)
                 Return False
 
-        End Select
+            End If
 
-        Return True
+        Else
 
-    End Function
+            Console.WriteLine("Ivalid arguments")
+            Console.ReadKey(True)
+            Return False
 
-    ' I've studied russian at the univercity, it's not my native language, 
-    ' I'm not sure if I've translated eveything correctly :)
-
-    Private Overloads Function LoadMessages() As Boolean
-
-        Select Case eCurLang
-            Case Language.EN_Lang : sUIMsg = File.ReadAllLines("english.msg")
-            Case Language.RU_Lang : sUIMsg = File.ReadAllLines("russian.msg")
-        End Select
-
-        If sUIMsg.Length > 23 Then Return True
-
-        Select Case eCurLang
-
-            Case Language.EN_Lang
-                Console.WriteLine("Critical error: File english.msg is corrupt!")
-                Console.ReadKey(True)
-                Return False
-
-            Case Language.RU_Lang
-                Console.WriteLine("Критическая ошибка: Файл russian.msg повреджен!")
-                Console.ReadKey(True)
-                Return False
-
-        End Select
+        End If
 
     End Function
 
-    Private Overloads Sub LoadMessages(ByVal eLang As Language)
+    Private Sub LoadMessages()
 
         'Dim sMsgList As String() = _
         'System.Reflection.Assembly.GetExecutingAssembly.GetManifestResourceNames()
@@ -76,13 +64,13 @@ Public Class clsMsg
 
         With Assembly.GetExecutingAssembly
 
-            Select Case eLang
+            Select Case eCurLang
 
                 Case Language.EN_Lang
                     ioSourceFile = New StreamReader(.GetManifestResourceStream("QFIL_Helper.english.msg"))
                     sUIMsg = ioSourceFile.ReadToEnd().Split(vbCrLf)
 
-                Case Language.RU_Lang
+                Case Language.RU_UTF8, Language.RU_ANSI
                     ioSourceFile = New StreamReader(.GetManifestResourceStream("QFIL_Helper.russian.msg"))
                     sUIMsg = ioSourceFile.ReadToEnd().Split(vbCrLf)
 
@@ -96,49 +84,28 @@ Public Class clsMsg
 
     End Sub
 
-    Public Function ValidateLanguage(ByRef sCurLang() As String) As Boolean
+    Private Function ConvertToANSI(ByVal iCurID As Byte) As String
 
-        If sCurLang.Length = 0 Then _
-            ReDim sCurLang(0 To 0)
+        Dim oUnicode As Encoding = Encoding.Unicode
+        Dim oASCII As Encoding = Encoding.GetEncoding(1251)
 
-        Select Case sCurLang(0)
+        Dim iaUnicode As Byte() = oUnicode.GetBytes(sUIMsg(iCurID))
+        Dim iaASCII As Byte() = System.Text.Encoding.Convert(oUnicode, oASCII, iaUnicode)
 
-            Case "-en", "-EN", ""
-
-                If Not File.Exists("english.msg") Then
-                    Console.WriteLine("Critical error: english.msg file is missing!")
-                    Console.ReadKey(True)
-                    Return False
-                End If
-
-                eCurLang = Language.EN_Lang
-
-            Case "-ru", "-RU"
-
-                If Not File.Exists("russian.msg") Then
-                    Console.WriteLine("Критическая ошибка: Не найден файл russian.msg!")
-                    Console.ReadKey(True)
-                    Return False
-                End If
-
-                eCurLang = Language.RU_Lang
-
-            Case Else
-
-                Console.WriteLine("Ivalid arguments")
-                Console.ReadKey(True)
-                Return False
-
-        End Select
-
-        Return LoadMessages()
+        ConvertToANSI = oASCII.GetString(iaASCII)
+        oUnicode = Nothing : oASCII = Nothing
+        iaUnicode = Nothing : iaASCII = Nothing
 
     End Function
 
     Public ReadOnly Property ID2Msg(ByVal iCurID As Byte) As String
 
         Get
-            Return sUIMsg(iCurID - 1)
+            Select Case eCurLang
+                Case Language.EN_Lang : Return sUIMsg(iCurID - 1)
+                Case Language.RU_UTF8 : Return sUIMsg(iCurID - 1)
+                Case Language.RU_ANSI : Return ConvertToANSI(iCurID - 1)
+            End Select
         End Get
 
     End Property

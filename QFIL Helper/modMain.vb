@@ -23,7 +23,6 @@ Module modMain
 
         Console.Title = My.Application.Info.Title
         Console.ForegroundColor = ConsoleColor.Red
-        Console.OutputEncoding = System.Text.Encoding.UTF8
 
         Dim oPProcessor As New clsLUNs
         Dim cCurKey As Char
