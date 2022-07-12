@@ -19,6 +19,7 @@ Public Class clsHParts : Inherits clsVParts
 
         ioSourceFile = File.OpenText(sFileName)
         ioLogFile = File.CreateText(DirName & "hidden_partitions.log")
+        CreateBackupFolder()
 
         While (Not ioSourceFile.EndOfStream)
 
@@ -65,6 +66,7 @@ Public Class clsHParts : Inherits clsVParts
 
         ioSourceFile.Close() : ioSourceFile.Dispose() : ioSourceFile = Nothing
         ioLogFile.Close() : ioLogFile.Dispose() : ioLogFile = Nothing
+        CreateBackupFolder()
 
     End Sub
 

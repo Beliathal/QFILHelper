@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 Imports Microsoft.VisualBasic
 
-Public Class clsVParts : Inherits clsInfo
+Public Class clsVParts : Inherits clsInit
 
     Public Sub BackupPartitions()
 
@@ -10,6 +10,7 @@ Public Class clsVParts : Inherits clsInfo
         Dim sCMDLine As String
 
         ioSourceFile = File.OpenText(sFileName)
+        CreateBackupFolder()
 
         While (Not ioSourceFile.EndOfStream)
 
@@ -33,6 +34,7 @@ Public Class clsVParts : Inherits clsInfo
         ioSourceFile.Close()
         ioSourceFile.Dispose()
         ioSourceFile = Nothing
+        CleanUpBackupFolder()
 
     End Sub
 
@@ -162,84 +164,6 @@ Public Class clsVParts : Inherits clsInfo
             End If
 
         End If
-
-    End Function
-
-    Public Function ValidateFiles() As Boolean
-
-        ' Get all files in current folder
-
-        Dim saFileList() As String = _
-            Directory.GetFiles(Directory.GetCurrentDirectory)
-
-        Dim isPortNumber As Boolean
-        Dim isPartitionList As Boolean
-        Dim isFHLoader As Boolean
-
-        For iCnt As UInt16 = 0 To saFileList.Length - 1
-
-            If saFileList(iCnt).IndexOf("_PartitionsList.xml") > -1 And _
-               saFileList(iCnt).IndexOf("COM") > -1 Then
-
-                isPartitionList = True
-                sFileName = Path.GetFileName(saFileList(iCnt))
-                isPortNumber = ParseCOMPortNumber()
-
-            ElseIf saFileList(iCnt).IndexOf("fh_loader.exe") > -1 Then
-                isFHLoader = True
-            End If
-
-            ' Found both the fh_loader.exe and the PartitionsList.xml
-            If isFHLoader And isPortNumber Then Exit For
-
-        Next
-
-        If Not isFHLoader Then
-            Console.WriteLine(ID2Msg(18))
-            Console.WriteLine(ID2Msg(21))
-            Console.ReadKey()
-            Return False
-
-        ElseIf Not isPartitionList Then
-            Console.WriteLine(ID2Msg(19))
-            Console.WriteLine(ID2Msg(21))
-            Console.ReadKey()
-            Return False
-
-        ElseIf Not isPortNumber Then
-            Console.WriteLine(ID2Msg(20))
-            Console.WriteLine(ID2Msg(21))
-            Console.ReadKey()
-            Return False
-
-        End If
-
-        Directory.CreateDirectory(sDirName)
-        FileSystem.FileCopy(sFileName, DirName & sFileName)
-        Return True
-
-    End Function
-
-    Private Function ParseCOMPortNumber() As Boolean
-
-        ' File Name Example: COM13_PartitionsList.xml
-        ' Start immidiately after COM and continue until _ sign
-        ' Everything in-between should be numbers
-
-        Dim iPortNumber As UInt16
-
-        For iCnt As UInt16 = _
-            sFileName.IndexOf("COM") + 3 To sFileName.Length - 1
-
-            If UInt16.TryParse(sFileName(iCnt), iPortNumber) Then
-                sCOMPort &= sFileName(iCnt)
-                ParseCOMPortNumber = True
-
-            ElseIf sFileName(iCnt) = "_" Then
-                Exit For
-            End If
-
-        Next
 
     End Function
 

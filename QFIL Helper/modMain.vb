@@ -25,12 +25,10 @@ Module modMain
         Console.ForegroundColor = ConsoleColor.Red
         Console.OutputEncoding = System.Text.Encoding.UTF8
 
-
-
         Dim oPProcessor As New clsLUNs
         Dim cCurKey As Char
 
-        If Not oPProcessor.ValidateLanguage(args) OrElse _
+        If Not oPProcessor.ParseArguments(args) OrElse _
             Not oPProcessor.ValidateFiles() Then
             oPProcessor = Nothing
             args = Nothing

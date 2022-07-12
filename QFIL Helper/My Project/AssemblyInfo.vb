@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("QFIL Helper")> 
-<Assembly: AssemblyCopyright("Copyright ©  2022")> 
+<Assembly: AssemblyCopyright("Copyright ©  2022 Beliathal")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,6 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("1.0.0.33")> 
+<Assembly: AssemblyFileVersion("1.0.0.33")> <Assembly: AssemblyInformationalVersion("0.0.0.0")>
+

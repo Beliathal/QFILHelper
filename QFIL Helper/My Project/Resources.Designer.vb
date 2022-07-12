@@ -59,5 +59,57 @@ Namespace My.Resources
                 resourceCulture = value
             End Set
         End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Byte[].
+        '''</summary>
+        Friend ReadOnly Property english() As Byte()
+            Get
+                Dim obj As Object = ResourceManager.GetObject("english", resourceCulture)
+                Return CType(obj,Byte())
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Byte[].
+        '''</summary>
+        Friend ReadOnly Property fh_loader() As Byte()
+            Get
+                Dim obj As Object = ResourceManager.GetObject("fh_loader", resourceCulture)
+                Return CType(obj,Byte())
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to                     GNU GENERAL PUBLIC LICENSE
+        '''                       Version 3, 29 June 2007
+        '''
+        ''' Copyright (C) 2007 Free Software Foundation, Inc. &lt;https://fsf.org/&gt;
+        ''' Everyone is permitted to copy and distribute verbatim copies
+        ''' of this license document, but changing it is not allowed.
+        '''
+        '''                            Preamble
+        '''
+        '''  The GNU General Public License is a free, copyleft license for
+        '''software and other kinds of works.
+        '''
+        '''  The licenses for most software and other practical works are designed
+        '''t [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property licence() As String
+            Get
+                Return ResourceManager.GetString("licence", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Byte[].
+        '''</summary>
+        Friend ReadOnly Property russian() As Byte()
+            Get
+                Dim obj As Object = ResourceManager.GetObject("russian", resourceCulture)
+                Return CType(obj,Byte())
+            End Get
+        End Property
     End Module
 End Namespace

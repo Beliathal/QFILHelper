@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="clsHParts.vb" />
     <Compile Include="clsInfo.vb" />
+    <Compile Include="clsInit.vb" />
     <Compile Include="clsLUNs.vb" />
     <Compile Include="clsMsg.vb" />
     <Compile Include="clsVParts.vb" />
@@ -111,8 +112,21 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
+    <EmbeddedResource Include="Resources\english.msg" />
+    <EmbeddedResource Include="Resources\russian.msg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\licence.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\fh_loader.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties VsiSettingsState="Initialized" VsiUseTimeUtc="UseGlobal" VsiDeltaBaseDate="11/07/2022 12:57:31" VsiUseGlobalBaseDate="True" VsiConfigurationBuildAction="True.True.True.True.UseGlobal.UseGlobal" VsiAutoInformationalVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoFileVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiEnabled="True" />
+    </VisualStudio>
+  </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -13,6 +13,7 @@ Public Class clsLUNs : Inherits clsHParts
         ioLogFile = File.CreateText(DirName & "lun_backup.log")
         saBuffer = File.ReadAllLines(sFileName)
         sLabel = "LUN Backup"
+        CreateBackupFolder()
 
         ' Skipping LUN 0 becasue it has userdata at the end
         ' Skipping LUN 3 because it's hidden
@@ -57,6 +58,7 @@ Public Class clsLUNs : Inherits clsHParts
         ioLogFile.Dispose()
         ioLogFile = Nothing
         saBuffer = Nothing
+        CleanUpBackupFolder()
 
     End Sub
 
@@ -69,7 +71,7 @@ Public Class clsLUNs : Inherits clsHParts
 
     Public Sub BackupHiddenLUNs()
 
-        Dim sCurInput As String
+        Dim sCurInput As String = String.Empty
         Dim iCurStep As SByte
         Dim iCurLUN As Byte
         Dim iCurSectors As UInt32
@@ -109,7 +111,9 @@ Public Class clsLUNs : Inherits clsHParts
         LUN = iCurLUN
         Sectors = iCurSectors
 
+        CreateBackupFolder()
         ExecuteCommand(BuildCommand())
+        CleanUpBackupFolder()
 
     End Sub
 
@@ -121,7 +125,7 @@ Public Class clsLUNs : Inherits clsHParts
         iBegIndex = sBuffer.IndexOf("start_sector")
         iNumIndex = sBuffer.IndexOf("num_partition")
 
-        Reset()
+        ResetInfo()
 
         If iBegIndex > -1 AndAlso iNumIndex > -1 Then
 

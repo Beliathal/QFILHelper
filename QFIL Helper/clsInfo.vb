@@ -16,10 +16,6 @@
     Private Const scHiddenLUN3 As String = "2048"
     Private Const scHiddenLUN6 As String = "1024"
 
-    Public Sub New()
-        sDirName = "Backup-" & Format(System.DateTime.Now, "yyyy-MM-dd-hhmmss")
-    End Sub
-
     Protected ReadOnly Property DirName() As String
 
         Get
@@ -72,7 +68,7 @@
 
     End Property
 
-    Protected Sub Reset()
+    Protected Sub ResetInfo()
 
         sLabel = "" : sLUN = "" : sStart = "" : sSectors = ""
         iLUN = 0 : iStart = 0 : iSectors = 0
@@ -107,5 +103,9 @@
         Return "4096"
 
     End Function
+
+    Protected Sub ResetBackupDate()
+        sDirName = "Backup-" & Format(System.DateTime.Now, "yyyy-MM-dd-hhmmss")
+    End Sub
 
 End Class
