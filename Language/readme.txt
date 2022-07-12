@@ -1,1 +1,0 @@
-Put this files into your Bin/Debug or Bin/Release folder
