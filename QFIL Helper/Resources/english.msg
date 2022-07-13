@@ -21,4 +21,4 @@ Error: Unable to extract COM Port number from the COMx_PartitionsList.xml
 Press any key to quit...
 Enter LUN index (3,6?) | Q-Main menu
 Enter number of sectors (@?) | Q-Main menu
-Saving LUN: 
+Saving: LUN
