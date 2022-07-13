@@ -17,9 +17,9 @@ Public Class clsHParts : Inherits clsVParts
         Dim iLastSector As UInt32
         Dim iHidCnt As UInt32
 
+        CreateBackupFolder()
         ioSourceFile = File.OpenText(sFileName)
         ioLogFile = File.CreateText(DirName & "hidden_partitions.log")
-        CreateBackupFolder()
 
         While (Not ioSourceFile.EndOfStream)
 
@@ -37,6 +37,7 @@ Public Class clsHParts : Inherits clsVParts
 
                         iLastLUN = iLUN
                         iLastSector = iSize
+                        iHidCnt = 0 ' update: 13-07-2022
                         Continue While
 
                     End If
@@ -66,7 +67,7 @@ Public Class clsHParts : Inherits clsVParts
 
         ioSourceFile.Close() : ioSourceFile.Dispose() : ioSourceFile = Nothing
         ioLogFile.Close() : ioLogFile.Dispose() : ioLogFile = Nothing
-        CreateBackupFolder()
+        CleanUpBackupFolder()
 
     End Sub
 

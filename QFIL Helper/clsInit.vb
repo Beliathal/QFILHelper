@@ -25,16 +25,6 @@ Public Class clsInit : Inherits clsInfo
 
         Next
 
-        ' IF fh_loader is missing in QFIL instalation folder the program will extract embedded
-
-        If Not File.Exists("fh_loader.exe") Then
-            File.WriteAllBytes("fh_loader.exe", My.Resources.fh_loader)
-        End If
-
-        ' The reason why I preffer not to use the attached fh_loader is because the version of the QFIL 
-        ' that user has might be different from the one which I'm using and my version of fh_loader might 
-        ' not function correctly.
-
         If Not isPartitionList Then
             Console.WriteLine(ID2Msg(19))
             Console.WriteLine(ID2Msg(21))
@@ -48,6 +38,16 @@ Public Class clsInit : Inherits clsInfo
             Return False
 
         End If
+
+        ' IF fh_loader is missing in QFIL instalation folder
+
+        If Not File.Exists("fh_loader.exe") Then
+            File.WriteAllBytes("fh_loader.exe", My.Resources.fh_loader)
+        End If
+
+        ' The reason why I preffer not to use the attached fh_loader is because 
+        ' the urser's build of the QFIL might differ from the one I'm using and 
+        ' the attached fh_loader might not function correctly.
 
         Return True
 
@@ -147,8 +147,7 @@ Public Class clsInit : Inherits clsInfo
 
     Protected Sub CleanUpBackupFolder()
 
-        If Directory.GetFiles( _
-            Directory.GetCurrentDirectory, "*.bin").Length > 0 Then Exit Sub
+        If Directory.GetFiles(sDirName, "*.bin").Length > 0 Then Exit Sub
 
         ' True to force delete non empty Dir
         Directory.Delete(sDirName, True)

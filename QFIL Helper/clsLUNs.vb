@@ -10,10 +10,10 @@ Public Class clsLUNs : Inherits clsHParts
         Dim sCMDLine As String
         Dim iIndex As Integer
 
+        CreateBackupFolder()
         ioLogFile = File.CreateText(DirName & "lun_backup.log")
         saBuffer = File.ReadAllLines(sFileName)
         sLabel = "LUN Backup"
-        CreateBackupFolder()
 
         ' Skipping LUN 0 becasue it has userdata at the end
         ' Skipping LUN 3 because it's hidden
@@ -76,6 +76,8 @@ Public Class clsLUNs : Inherits clsHParts
         Dim iCurLUN As Byte
         Dim iCurSectors As UInt32
 
+        CreateBackupFolder()
+
         Do
 
             Select Case iCurStep
@@ -96,6 +98,13 @@ Public Class clsLUNs : Inherits clsHParts
                     If Not UInt32.TryParse(sCurInput, iCurSectors) _
                         Then iCurStep = -1 Else iCurStep = 2
 
+                Case 2
+
+                    LUN = iCurLUN
+                    Sectors = iCurSectors
+                    ExecuteCommand(BuildCommand())
+                    iCurStep = 0
+
                 Case -2 To -1
 
                     Console.WriteLine(ID2Msg(7) & vbCrLf)
@@ -103,16 +112,8 @@ Public Class clsLUNs : Inherits clsHParts
 
             End Select
 
-            If sCurInput = "Q" OrElse _
-                sCurInput = "q" Then Exit Sub
+        Loop Until sCurInput.ToLower = "q"
 
-        Loop Until iCurStep = 2
-
-        LUN = iCurLUN
-        Sectors = iCurSectors
-
-        CreateBackupFolder()
-        ExecuteCommand(BuildCommand())
         CleanUpBackupFolder()
 
     End Sub
@@ -202,7 +203,7 @@ Public Class clsLUNs : Inherits clsHParts
                        " --num_sectors=" & sSectors & _
                        " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
 
-        Console.WriteLine(ID2Msg(23) & sLUN & "_Complete.bin" & _
+        Console.WriteLine(ID2Msg(24) & sLUN & "_Complete.bin" & _
                           " | Sectors: " & sSectors & vbNewLine)
 
     End Function

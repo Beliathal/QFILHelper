@@ -9,8 +9,8 @@ Public Class clsVParts : Inherits clsInit
         Dim sBuffer As String
         Dim sCMDLine As String
 
-        ioSourceFile = File.OpenText(sFileName)
         CreateBackupFolder()
+        ioSourceFile = File.OpenText(sFileName)
 
         While (Not ioSourceFile.EndOfStream)
 
