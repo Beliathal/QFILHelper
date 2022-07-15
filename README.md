@@ -39,6 +39,7 @@ The program was tested with: Android 9, LG V450PM, Qualcomm USB Driver v1.00.37,
 How to use:
 <ul>
 <li>Place QFILHelper.exe to your QFIL instalation folder</li>
+<i> usually: C:\Program Files (x86)\Qualcomm\QPST\bin </i>
 <li>Connect your phone to the PC in EDL mode</li>
 <li>Launch QFIL and open Partition Manager</li>
 <li>Click on "Save Partition File"</li>
