@@ -1,10 +1,10 @@
-<b>QFIL helper</b> is a console app created out of the necessity to automate the process of partition backup with QFIL utility.  As one of the “lucky” owners of the sprint branded LG v50, I was faced with the grim prospect of making manual backup of every available partition, every time I’d want to upgrade, downgrade, tфmper with the system files or mess with Magisk modules. 
+<b>QFIL Helper</b> is a console app created out of the necessity to automate the process of partition backup with QFIL utility.  As one of the “lucky” owners of the sprint branded LG v50, I was faced with the grim prospect of making manual backup of every available partition, every time I’d want to upgrade, downgrade, tфmper with the system files or mess with Magisk modules. 
 
 While researching this subject, I've stumbled upon [this guide](https://forum.xda-developers.com/t/tutorial-full-flash-backup-and-restore.4362809/) explaining in great detail how to use fh_loader.exe supplied within QFIL (QPST) utility. Then I've decided to take it one step further and automate the entire process…
 
 Features:
 
-■ Backup Partitions
+◆ Backup Partitions
 <ul>
 <li>	Performs an automated backup of all aviable partitions. </li>
 <li>	PartitionsList.xml must be up-to-date and placed beside QFILHelper.exe </li>
@@ -34,14 +34,14 @@ Things to remember:
 
 ⚑ It's recommended to place QFIL Helper in the same directory in which QFIL was installed.
 
-  <i>Usualy: C:\Program Files (x86)\Qualcomm\QPST\bin\</i>
+	Usualy: C:\Program Files (x86)\Qualcomm\QPST\bin\
 
 ⚑ Every time you make a backup with QFIL Helper, it'll be saved in: Backup-Year-Month-Day-Hour-Minute-Seconds
 
-  <i>	For Example, if today's date is 2022-07-20 and current time is 18:14:44, 
-	  then the backup directory we should expect to find is: 
+	For Example, if today's date is 2022-07-20 and current time is 18:14:44,
+	then the backup directory would be named like this:
 	
-	Backup-2022-07-20-18-14-44</i>
+	Backup-2022-07-20-18-14-44
 
 ⚑ Always make sure you have generated PartitionsList.xml file from within the QFIL Partition Manager and placed it
   beside QFIL Helper.
