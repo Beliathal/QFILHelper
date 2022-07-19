@@ -2,7 +2,9 @@
 
 While researching this subject, I've stumbled upon [this guide](https://forum.xda-developers.com/t/tutorial-full-flash-backup-and-restore.4362809/) explaining in great detail how to use fh_loader.exe supplied within QFIL (QPST) utility. Then I've decided to take it one step further and automate the entire process…
 
-Features:
+<hr>
+
+<b>Features:</b>
 
 ◆ Backup Partitions
 <ul>
@@ -32,7 +34,31 @@ Features:
 <li>  Use this mode only if you're absolutely sure you know what you doing.</li>
 </ul>
 
-Things to remember:
+◆ Backup: ABL, Boot, LAF, XBL
+<ul>
+<li>	Quick backup of all boot related partitions.</li>
+</ul>
+
+◆ Backup: FTM, Modemst, FSG, FSC
+<ul>
+<li>	Quick backup of vital partitons.</li>
+</ul>
+
+◆ Detect connected COM ports
+<ul>
+<li>	QFIL Helper will continiously query Windows for all connected devices.</li>
+<li>	If Qualcomm HS-USB QDLoader 9008 is detected, then your phone is connected in EDL mode.</li>
+</ul>
+
+◆ Flash firmware
+<ul>
+<li>	QFIL Helper flash all *.bin files it finds in Flash folder. </li>
+<li>	You can flash files backed-up by QFIL Helper or 3rd party images like Engineering ABL. </li>
+</ul>
+
+<hr>
+
+<b>Things to remember:</b>
 
 ⚑ It's recommended, but not mandatory, to place QFIL Helper in the same directory where QFIL was installed.
 
@@ -50,6 +76,19 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 
 	C:\Users\Your User Name\AppData\Roaming\Qualcomm\QFIL\
 
+
+⚑ When flashing firmware images the files must be be named according to one of these pattern:</li>
+			
+	lun#_partition_$.bin; parition_$.bin; partition.bin; lun#.bin;
+		
+	For example:
+		
+	lun4_abl_a.bin - will be flashed into LUN4, Slot A
+	abl_a.bin - will be also flashed into LUN4, Slot A.
+	lun4.bin - will flash entire LUN4
+	
+<hr>
+
 <i>v1.0.0.61 was tested sucefully with:</i>
 
 	Android 9, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
@@ -57,8 +96,10 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 <i>Update: 19-07-2022, v1.0.0.373: Tested sucefully with:</i>
 
 	Android 10, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
+	
+<hr>
 
-How to use:
+<b>How to use:</b>
 <ul>
 <li>Connect your phone to the PC in EDL mode</li>
 <li>Launch QFIL and open Partition Manager</li>
