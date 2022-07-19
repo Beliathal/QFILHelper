@@ -19,20 +19,31 @@ Imports Microsoft.VisualBasic
 
 Module modMain
 
+    Public goUILang As clsMsg ' Parsing command line arguments, loading language related strings
+
     Sub Main(args As String())
 
         Console.Title = My.Application.Info.Title
-        Console.ForegroundColor = ConsoleColor.Red
+        Console.CursorVisible = False
 
-        Dim oPProcessor As New clsLUNs
+        If Debugger.IsAttached Then _
+            Console.ForegroundColor = ConsoleColor.Red
+
+        goUILang = New clsMsg
+
+        If goUILang.ParseArguments(args) Then MainMenu()
+
+        goUILang = Nothing
+        args = Nothing
+
+        End
+
+    End Sub
+
+    Private Sub MainMenu()
+
+        Dim oPProcessor As New clsFlash
         Dim cCurKey As Char
-
-        If Not oPProcessor.ParseArguments(args) OrElse _
-            Not oPProcessor.ValidateFiles() Then
-            oPProcessor = Nothing
-            args = Nothing
-            Exit Sub
-        End If
 
         Do
 
@@ -41,12 +52,16 @@ Module modMain
                 Case ""
 
                     Console.Clear()
-                    Console.WriteLine(oPProcessor.ID2Msg(1) & vbCrLf)
-                    Console.WriteLine(oPProcessor.ID2Msg(2))
-                    Console.WriteLine(oPProcessor.ID2Msg(3))
-                    Console.WriteLine(oPProcessor.ID2Msg(4))
-                    Console.WriteLine(oPProcessor.ID2Msg(5))
-                    Console.WriteLine(oPProcessor.ID2Msg(6) & vbCrLf)
+                    Console.WriteLine(goUILang.ID2Msg(1) & vbCrLf)
+                    Console.WriteLine(goUILang.ID2Msg(2))
+                    Console.WriteLine(goUILang.ID2Msg(3))
+                    Console.WriteLine(goUILang.ID2Msg(4))
+                    Console.WriteLine(goUILang.ID2Msg(5))
+                    Console.WriteLine(goUILang.ID2Msg(25))
+                    Console.WriteLine(goUILang.ID2Msg(35))
+                    Console.WriteLine(goUILang.ID2Msg(26))
+                    Console.WriteLine(goUILang.ID2Msg(36))
+                    Console.WriteLine(goUILang.ID2Msg(6) & vbCrLf)
 
                     cCurKey = Console.ReadKey(True).KeyChar
 
@@ -57,12 +72,12 @@ Module modMain
 
                 Case "2"
                     Console.Clear()
-                    oPProcessor.FindHiddenParts()
+                    oPProcessor.BackupLUNs()
                     cCurKey = ""
 
                 Case "3"
                     Console.Clear()
-                    oPProcessor.BackupLUNs()
+                    oPProcessor.FindHiddenParts()
                     cCurKey = ""
 
                 Case "4"
@@ -70,12 +85,32 @@ Module modMain
                     oPProcessor.BackupHiddenLUNs()
                     cCurKey = ""
 
+                Case "5"
+                    Console.Clear()
+                    oPProcessor.BackupBootParts()
+                    cCurKey = ""
+
+                Case "6"
+                    Console.Clear()
+                    oPProcessor.BackupIMEIParts()
+                    cCurKey = ""
+
+                Case "7"
+                    Console.Clear()
+                    oPProcessor.QueryCOMPorts()
+                    cCurKey = ""
+
+                Case "8"
+                    Console.Clear()
+                    oPProcessor.FlashFirmware()
+                    cCurKey = ""
+
                 Case "Q", "q"
                     'do nothing
 
                 Case Else
 
-                    Console.WriteLine(oPProcessor.ID2Msg(7))
+                    Console.WriteLine(goUILang.ID2Msg(7))
                     cCurKey = Console.ReadKey(True).KeyChar
 
             End Select

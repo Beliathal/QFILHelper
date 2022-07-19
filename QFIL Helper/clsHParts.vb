@@ -1,25 +1,29 @@
 ﻿Imports System.IO
 Imports Microsoft.VisualBasic
 
-Public Class clsHParts : Inherits clsVParts
+Public Class clsHParts : Inherits clsParts
 
-    ' If there is a gap between previous partition and current then:
-    ' Previous Partitions Start Sector + Sectors < Current Partition Start Sector
+    ' Some partitions, like DDR, CDT (LUN3), DevInfo, Limits (LUN4), are hidden and neither being displayed 
+    ' nor exported to partitionsList.xml
+
+    ' QFIL Helper will attempt to locate those partitions by searching for gaps between the end sector and 
+    ' the start sector of two neighboring partitions
 
     Public Sub FindHiddenParts()
 
-        Dim ioLogFile As StreamWriter
+        If Not ValidateFiles() Then Exit Sub
+
         Dim ioSourceFile As StreamReader
         Dim sBuffer As String
         Dim sCMDLine As String
 
         Dim iLastLUN As Nullable(Of Byte)
         Dim iLastSector As UInt32
-        Dim iHidCnt As UInt32
 
+        ResetInfo()
         CreateBackupFolder()
-        ioSourceFile = File.OpenText(sFileName)
-        ioLogFile = File.CreateText(DirName & "hidden_partitions.log")
+
+        ioSourceFile = File.OpenText(gsFileName)
 
         While (Not ioSourceFile.EndOfStream)
 
@@ -33,51 +37,64 @@ Public Class clsHParts : Inherits clsVParts
                     ' 2. LUN:0, Partiton:0, Sector:?
                     ' 3. Current LUN > Previous LUN ?: Reached partition boundaries
 
-                    If Not iLastLUN.HasValue OrElse iLUN > iLastLUN Then
+                    If Not iLastLUN.HasValue OrElse giLUN > iLastLUN Then
 
-                        iLastLUN = iLUN
-                        iLastSector = iSize
-                        iHidCnt = 0 ' update: 13-07-2022
+                        iLastLUN = giLUN
+                        iLastSector = Size
                         Continue While
 
                     End If
 
-                    If iStart > iLastSector Then
+                    If giStart > iLastSector Then
 
                         ' Hidden Start = Previous Start + Sectors [iLastSector]
                         ' Hidden Sectors = New Start - (Previous Start + Previous Sectors)
 
-                        Label(iHidCnt) = "hidden_partition_"
-                        Sectors = iStart - iLastSector
+                        Sectors = giStart - iLastSector
                         Start = iLastSector
                         sCMDLine = BuildCommand()
-                        iHidCnt += 1
 
                         If Not ExecuteCommand(sCMDLine) Then Exit While
-                        WriteLog(ioLogFile)
 
                     End If
 
-                    iLastSector = iSize
+                    iLastSector = Size
 
                 End If
             End If
 
         End While
 
-        ioSourceFile.Close() : ioSourceFile.Dispose() : ioSourceFile = Nothing
-        ioLogFile.Close() : ioLogFile.Dispose() : ioLogFile = Nothing
+        ioSourceFile.Close()
+        ioSourceFile.Dispose()
+        ioSourceFile = Nothing
+
         CleanUpBackupFolder()
+        ProcessCompletedMsg()
 
     End Sub
 
-    Private Sub WriteLog(ByRef ioLogFile As StreamWriter)
+    Private Shadows Function BuildCommand() As String
 
-        ioLogFile.WriteLine(sLabel & _
-                            " LUN: " & sLUN & _
-                            " Start: " & sStart & _
-                            " Sectors: " & sSectors)
+        ' fh_loader.exe --port=\\.\COM? --convertprogram2read --sendimage=lun5_hidden_partiton_b-0_s-6.bin
+        ' --start_sector=6 --lun=0  --num_sectors=8192 --noprompt --showpercentagecomplete --zlpawarehost=1 
+        ' --memoryname=ufs
 
-    End Sub
+        Dim sCurLabel As String = DirWithSlash & "lun" & gsLUN & HiddenPart & ".bin"
+
+        BuildCommand = "--port=\\.\" & gsCOMPort & _
+                       " --convertprogram2read --sendimage=" & sCurLabel & _
+                       " --start_sector=" & gsStart & _
+                       " --lun=" & gsLUN & _
+                       " --num_sectors=" & gsSectors & _
+                       " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
+
+        Console.WriteLine(goUILang.ID2Msg(10) & "hidden partition at" & _
+                          " LUN: " & gsLUN & _
+                          " | Start: " & gsStart & _
+                          " | Sectors: " & gsSectors & _
+                          vbNewLine)
+
+    End Function
 
 End Class

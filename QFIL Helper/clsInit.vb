@@ -1,39 +1,237 @@
 ﻿Imports System.IO
+Imports System.Environment
 Imports Microsoft.VisualBasic
 
 Public Class clsInit : Inherits clsInfo
 
-    Public Overloads Function ValidateFiles() As Boolean
+    Protected gsCOMPort As String
+    Protected gsFileName As String
+    Protected gsDirName As String
 
-        Dim saFileList() As String = _
-            Directory.GetFiles(Directory.GetCurrentDirectory)
+    Protected ResetBackupDate As Action = _
+        Sub() gsDirName = "Backup-" & Format(System.DateTime.Now, "yyyy-MM-dd-hhmmss")
 
-        Dim isPortNumber As Boolean
+    Private CalcDaysDif As Func(Of UInt16) = _
+        Function() Now.DayOfYear - File.GetLastWriteTime(gsFileName).DayOfYear
+
+    Private ReturnProgramFiles As Func(Of String) = _
+        Function() GetFolderPath(SpecialFolder.ProgramFilesX86) _
+                    & "\Qualcomm\QPST\bin\" & gsCOMPort & "_PartitionsList.xml"
+
+    Private ReturnRoaming As Func(Of String) = _
+        Function() GetFolderPath(SpecialFolder.ApplicationData) _
+                    & "\Qualcomm\QFIL\" & gsCOMPort & "_PartitionsList.xml"
+
+    Public Sub QueryCOMPorts()
+
+        Dim cCurKey As Char
+        Dim tCOMPort = New Timers.Timer
+
+        tCOMPort.AutoReset = True
+        tCOMPort.Interval = 500
+        AddHandler tCOMPort.Elapsed, AddressOf WaitForCOMPort
+        tCOMPort.Start()
+
+        Do
+
+            Console.WriteLine(goUILang.ID2Msg(30))
+            cCurKey = Console.ReadKey(True).KeyChar
+
+        Loop Until cCurKey = "Q" OrElse cCurKey = "q"
+
+        tCOMPort.Enabled = False
+        tCOMPort.Stop()
+
+    End Sub
+
+    Private Sub WaitForCOMPort( _
+                              ByVal sender As Object, _
+                              ByVal e As System.Timers.ElapsedEventArgs)
+
+        Static iBlinker As UInt16
+        Dim eColor As System.ConsoleColor
+        Dim sPortName As String
+
+        sender.Enabled = False
+
+        If Not isCOMPort(sPortName) Then
+
+            If iBlinker Mod 2 = 0 Then
+
+                eColor = Console.ForegroundColor
+                Console.ForegroundColor = ConsoleColor.Yellow
+                'Console.SetCursorPosition(0, Console.CursorTop - 1)
+                Console.Write(goUILang.ID2Msg(31))
+                Console.ForegroundColor = eColor
+                Console.CursorTop -= 1
+
+                iBlinker += IIf(iBlinker = UInt16.MaxValue, 0, 1)
+
+            Else
+
+                eColor = Console.ForegroundColor
+                Console.ForegroundColor = Console.BackgroundColor
+                'Console.SetCursorPosition(0, Console.CursorTop - 1)
+                Console.Write(goUILang.ID2Msg(31))
+                Console.ForegroundColor = eColor
+                Console.CursorTop -= 1
+
+                iBlinker += IIf(iBlinker = UInt16.MaxValue, 0, 1)
+
+            End If
+
+            sender.Enabled = True
+
+        Else
+
+            sender.Enabled = False
+            sender.Stop()
+
+            eColor = Console.ForegroundColor
+            Console.ForegroundColor = Console.BackgroundColor
+            'Console.SetCursorPosition(0, Console.CursorTop - 1)
+            Console.Write(goUILang.ID2Msg(31))
+            Console.ForegroundColor = eColor
+            Console.CursorTop -= 1
+
+            Console.ForegroundColor = ConsoleColor.Green
+            Console.WriteLine(goUILang.ID2Msg(32) & sPortName)
+            Console.ForegroundColor = eColor
+
+        End If
+
+    End Sub
+
+    ' This function requires referrence to System.Management assembly. It would iterate thru all
+    ' aviable devices in Windows, looking for "Qualcomm". There's yet another way to do this,
+    ' using QPST assembly supplied with Qualcomm's USB drivers which can be refereced in the VS.
+
+    Private Function isCOMPort(ByRef sPortName As String) As Boolean
+
+        If Ports.SerialPort.GetPortNames.Count = 0 Then Return False
+
+        Dim oSearcher As Management.ManagementObjectSearcher
+        Dim oCollection As Management.ManagementObjectCollection
+
+        oSearcher = New Management.ManagementObjectSearcher("Select * from Win32_PnPEntity")
+        oCollection = oSearcher.Get
+
+        For Each oEntity As Management.ManagementObject In oCollection
+
+            sPortName = oEntity.Properties.Item("Name").Value
+
+            If sPortName = "" Then Continue For
+            If sPortName.IndexOf("Qualcomm HS-USB QDLoader 9008") > -1 Then Return True
+
+        Next
+
+    End Function
+
+    Public Function ValidateFiles() As Boolean
+
+        ' Is there a Qualcomm device connected?
+        If Not isCOMPort(gsCOMPort) Then
+
+            Console.WriteLine(goUILang.ID2Msg(33))
+            Console.WriteLine(goUILang.ID2Msg(34))
+            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.ReadKey(True)
+            Return False
+
+        End If
+
+        ' Attempt to extract COM port number
+        If Not ParseCOMPortNumber(gsCOMPort) Then
+
+            Console.WriteLine(goUILang.ID2Msg(27))
+            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.ReadKey(True)
+            Return False
+
+        End If
+
+        ' Is there a PartitionsList file with mathing COM port number?
+        If Not LocatePartitionsList() Then
+
+            Console.WriteLine(goUILang.ID2Msg(19))
+            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.ReadKey(True)
+            Return False
+
+        End If
+
+        ' Has the user lunched QFIL.exe?
+        If Process.GetProcessesByName("QFIL").Count = 0 Then
+
+            Console.WriteLine(goUILang.ID2Msg(41))
+            Console.WriteLine(goUILang.ID2Msg(42))
+            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.ReadKey(True)
+            Return False
+
+        End If
+
+        ' Is PartitionsList.xml file older than 1 day?
+        If Not OutdatedWarning() Then Return False
+
+        ' IF fh_loader is missing in QFIL instalation folder
+
+        If Not File.Exists("fh_loader.exe") Then
+            File.WriteAllBytes("fh_loader.exe", My.Resources.fh_loader)
+        End If
+
+        ' The reason why I preffer not to use the attached fh_loader is because 
+        ' the urser's build of the QFIL might differ from the one I'm using and 
+        ' the attached fh_loader might not function correctly.
+
+        If Not Directory.Exists("Flash") Then _
+            Directory.CreateDirectory("Flash")
+
+        Return True
+
+    End Function
+
+    ' This is old function that would look for the most recent version of the PartitionsList.xml file
+    ' by checking the modification date parameter. The user can have more than one such file if they 
+    ' connect their phone to multiple different USB ports which in turn would produce different COM numbers... 
+
+    ' I've abanded this algorithm in favor of the one used above, where the COM number is determent 
+    ' by iteration tru Windows devices list.
+
+    Public Function ValidateFiles_Debug() As Boolean
+
+        Dim saFileList() As String = Directory.GetFiles( _
+            Directory.GetCurrentDirectory, "*PartitionsList.xml")
+
         Dim isPartitionList As Boolean
+        Dim dLastDate As Date = Date.MinValue
+        Dim dCurDate As Date = Date.MinValue
+        Dim sCurFile As String
 
         For iCnt As UInt16 = 0 To saFileList.Length - 1
 
             If saFileList(iCnt).IndexOf("_PartitionsList.xml") > -1 And _
                saFileList(iCnt).IndexOf("COM") > -1 Then
 
-                isPartitionList = True
-                sFileName = Path.GetFileName(saFileList(iCnt))
-                isPortNumber = ParseCOMPortNumber()
-                Exit For
+                sCurFile = Path.GetFileName(saFileList(iCnt))
+                dCurDate = File.GetLastWriteTime(sCurFile)
+
+                If dCurDate > dLastDate Then _
+                    gsFileName = sCurFile : dLastDate = dCurDate : isPartitionList = True
 
             End If
 
         Next
 
         If Not isPartitionList Then
-            Console.WriteLine(ID2Msg(19))
-            Console.WriteLine(ID2Msg(21))
+            Console.WriteLine(goUILang.ID2Msg(19))
+            Console.WriteLine(goUILang.ID2Msg(21))
             Console.ReadKey()
             Return False
 
-        ElseIf Not isPortNumber Then
-            Console.WriteLine(ID2Msg(20))
-            Console.WriteLine(ID2Msg(21))
+        ElseIf Not ParseCOMPortNumber() Then
+            Console.WriteLine(goUILang.ID2Msg(27))
+            Console.WriteLine(goUILang.ID2Msg(21))
             Console.ReadKey()
             Return False
 
@@ -53,65 +251,24 @@ Public Class clsInit : Inherits clsInfo
 
     End Function
 
-    Private Overloads Function ValidateFiles(ByVal isOutdatedCode As Boolean) As Boolean
+    Private Overloads Function ParseCOMPortNumber( _
+                                                 ByRef sPortName As String) As Boolean
 
-        ' Get all files in current folder
+        If sPortName.IndexOf("COM") < 0 Then Return False
 
-        Dim saFileList() As String = _
-            Directory.GetFiles(Directory.GetCurrentDirectory)
+        gsCOMPort = sPortName.Replace("(", "")
+        gsCOMPort = sPortName.Replace(")", "")
+        gsCOMPort = sPortName.Substring(sPortName.IndexOf("COM"))
 
-        Dim isPortNumber As Boolean
-        Dim isPartitionList As Boolean
-        Dim isFHLoader As Boolean
-
-        For iCnt As UInt16 = 0 To saFileList.Length - 1
-
-            If saFileList(iCnt).IndexOf("_PartitionsList.xml") > -1 And _
-               saFileList(iCnt).IndexOf("COM") > -1 Then
-
-                isPartitionList = True
-                sFileName = Path.GetFileName(saFileList(iCnt))
-                isPortNumber = ParseCOMPortNumber()
-
-            ElseIf saFileList(iCnt).IndexOf("fh_loader.exe") > -1 Then
-                isFHLoader = True
-
-            ElseIf saFileList(iCnt).IndexOf("fh_loader.exe") < 0 Then
-                File.WriteAllBytes("fh_loader.exe", My.Resources.fh_loader)
-            End If
-
-            ' Found both the fh_loader.exe and the PartitionsList.xml
-            If isFHLoader And isPortNumber Then Exit For
-
-        Next
-
-        If Not isFHLoader Then
-            Console.WriteLine(ID2Msg(18))
-            Console.WriteLine(ID2Msg(21))
-            Console.ReadKey()
-            Return False
-
-        ElseIf Not isPartitionList Then
-            Console.WriteLine(ID2Msg(19))
-            Console.WriteLine(ID2Msg(21))
-            Console.ReadKey()
-            Return False
-
-        ElseIf Not isPortNumber Then
-            Console.WriteLine(ID2Msg(20))
-            Console.WriteLine(ID2Msg(21))
-            Console.ReadKey()
-            Return False
-
-        End If
-
-        'Directory.CreateDirectory(sDirName)
-        'FileSystem.FileCopy(sFileName, DirName & sFileName)
         Return True
 
     End Function
 
-    Private Function ParseCOMPortNumber() As Boolean
+    ' This is old function that was ment to extract the port number from PartitionsList.xml name
+    ' It's been replaced with the function above and is needed for debugin purpouses when the phone is
+    ' not connected to the PC
+
+    Private Overloads Function ParseCOMPortNumber() As Boolean
 
         ' File Name Example: COM13_PartitionsList.xml
         ' Start immidiately after COM and continue until _ sign
@@ -120,13 +277,13 @@ Public Class clsInit : Inherits clsInfo
         Dim iPortNumber As UInt16
 
         For iCnt As UInt16 = _
-            sFileName.IndexOf("COM") + 3 To sFileName.Length - 1
+            gsFileName.IndexOf("COM") + 3 To gsFileName.Length - 1
 
-            If UInt16.TryParse(sFileName(iCnt), iPortNumber) Then
-                sCOMPort &= sFileName(iCnt)
+            If UInt16.TryParse(gsFileName(iCnt), iPortNumber) Then
+                gsCOMPort &= gsFileName(iCnt)
                 ParseCOMPortNumber = True
 
-            ElseIf sFileName(iCnt) = "_" Then
+            ElseIf gsFileName(iCnt) = "_" Then
                 Exit For
             End If
 
@@ -137,8 +294,8 @@ Public Class clsInit : Inherits clsInfo
     Protected Sub CreateBackupFolder()
 
         ResetBackupDate()
-        Directory.CreateDirectory(sDirName)
-        FileSystem.FileCopy(sFileName, DirName & sFileName)
+        Directory.CreateDirectory(gsDirName)
+        FileSystem.FileCopy(gsFileName, DirWithSlash & gsFileName)
 
     End Sub
 
@@ -147,11 +304,92 @@ Public Class clsInit : Inherits clsInfo
 
     Protected Sub CleanUpBackupFolder()
 
-        If Directory.GetFiles(sDirName, "*.bin").Length > 0 Then Exit Sub
+        If Directory.GetFiles(gsDirName, "*.bin").Length > 0 Then Exit Sub
 
         ' True to force delete non empty Dir
-        Directory.Delete(sDirName, True)
+        Directory.Delete(gsDirName, True)
 
     End Sub
+
+    Protected ReadOnly Property DirWithSlash() As String
+
+        Get
+            Return gsDirName & "\"
+        End Get
+
+    End Property
+
+    Private Function OutdatedWarning() As Boolean
+
+        If CalcDaysDif() = 0 Then Return True
+
+        Dim sLine1 As String = goUILang.ID2Msg(43).Replace("$", gsFileName)
+        Dim sLine2 As String = goUILang.ID2Msg(44).Replace("@", Now.ToShortDateString)
+
+        sLine1 = sLine1.Replace("@", File.GetLastWriteTime(gsFileName).ToShortDateString)
+
+        Console.WriteLine(sLine1)
+        Console.WriteLine(sLine2)
+        Console.WriteLine(goUILang.ID2Msg(45))
+        Console.WriteLine(goUILang.ID2Msg(46))
+
+        If Console.ReadKey(True).Key <> _
+            ConsoleKey.Y Then Return False
+
+        Console.Clear()
+        Return True
+
+    End Function
+
+    ' Displays: Press any key to return to the main menu
+
+    Protected Sub ProcessCompletedMsg()
+
+        If gbFailed Then _
+             Console.WriteLine(goUILang.ID2Msg(47)) _
+        Else Console.WriteLine(goUILang.ID2Msg(48))
+
+        Console.WriteLine(goUILang.ID2Msg(17))
+        Console.ReadKey(True)
+
+    End Sub
+
+    Private Function LocatePartitionsList() As Boolean
+
+        If File.Exists(gsCOMPort & "_PartitionsList.xml") Then
+
+            gsFileName = gsCOMPort & "_PartitionsList.xml"
+            Return True
+
+        End If
+
+        ' Environment.SpecialFolder.ApplicationData - Roaming
+        ' Environment.SpecialFolder.LocalApplicationData - Local
+        ' Environment.SpecialFolder.ProgramFilesX86
+        ' Environment.GetEnvironmentVariable("ProgramFiles(x86)")
+
+        Dim sSrcFile As String = ReturnRoaming()
+        Dim sDstFile As String = Directory.GetCurrentDirectory()
+
+        gsFileName = gsCOMPort & "_PartitionsList.xml"
+        sDstFile &= "\" & gsCOMPort & "_PartitionsList.xml"
+
+        If File.Exists(sSrcFile) Then
+
+            File.Copy(sSrcFile, sDstFile, True)
+            Return True
+
+        End If
+
+        sSrcFile = ReturnProgramFiles()
+
+        If File.Exists(ReturnProgramFiles()) Then
+
+            File.Copy(sSrcFile, sDstFile, True)
+            Return True
+
+        End If
+
+    End Function
 
 End Class

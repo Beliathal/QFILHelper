@@ -65,6 +65,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -83,12 +84,15 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsFlash.vb" />
     <Compile Include="clsHParts.vb" />
+    <Compile Include="clsHLUNs.vb" />
     <Compile Include="clsInfo.vb" />
     <Compile Include="clsInit.vb" />
     <Compile Include="clsLUNs.vb" />
     <Compile Include="clsMsg.vb" />
-    <Compile Include="clsVParts.vb" />
+    <Compile Include="clsVital.vb" />
+    <Compile Include="clsParts.vb" />
     <Compile Include="modMain.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -125,8 +129,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
-    <EmbeddedResource Include="Resources\english.msg" />
-    <EmbeddedResource Include="Resources\russian.msg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\licence.txt" />
@@ -150,6 +152,18 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\boot_partitons.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\vital_partitions.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\english.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\russian.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <ProjectExtensions>

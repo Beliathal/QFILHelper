@@ -1,24 +1,25 @@
 ﻿Imports System.IO
 Imports System.Text
-Imports System.Reflection
 Imports Microsoft.VisualBasic
 
 Public Class clsMsg
-
     Private Enum Language As Byte
         EN_Lang = 0
         RU_UTF8 = 1
         RU_ANSI = 2
     End Enum
 
-    Private sUIMsg() As String
-    Private eCurLang As Language
+    Private gsaUIMsg() As String
+    Private geCurLang As Language
+
+    ' Set to true to test russian lang
+    Private isRULangTest As Boolean = False
 
     Public Function ParseArguments(ByRef sCurLang() As String) As Boolean
 
         If sCurLang.Length = 0 Then
 
-            eCurLang = Language.EN_Lang
+            geCurLang = Language.EN_Lang
             LoadMessages()
             Return True
 
@@ -26,14 +27,14 @@ Public Class clsMsg
 
             If sCurLang.Length = 1 Then
 
-                eCurLang = Language.RU_ANSI
+                geCurLang = Language.RU_ANSI
                 LoadMessages()
                 Return True
 
             ElseIf sCurLang(1).ToLower = "-utf8" Then
 
                 Console.OutputEncoding = Encoding.UTF8
-                eCurLang = Language.RU_UTF8
+                geCurLang = Language.RU_UTF8
                 LoadMessages()
                 Return True
 
@@ -57,30 +58,20 @@ Public Class clsMsg
 
     Private Sub LoadMessages()
 
-        'Dim sMsgList As String() = _
-        'System.Reflection.Assembly.GetExecutingAssembly.GetManifestResourceNames()
+        If isRULangTest Then
+            geCurLang = Language.RU_UTF8
+            Console.OutputEncoding = Encoding.UTF8
+        End If
 
-        Dim ioSourceFile As StreamReader
+        Select Case geCurLang
 
-        With Assembly.GetExecutingAssembly
+            Case Language.EN_Lang
+                gsaUIMsg = My.Resources.english.Split(vbCrLf)
 
-            Select Case eCurLang
+            Case Language.RU_UTF8, Language.RU_ANSI
+                gsaUIMsg = My.Resources.russian.Split(vbCrLf)
 
-                Case Language.EN_Lang
-                    ioSourceFile = New StreamReader(.GetManifestResourceStream("QFIL_Helper.english.msg"))
-                    sUIMsg = ioSourceFile.ReadToEnd().Split(vbCrLf)
-
-                Case Language.RU_UTF8, Language.RU_ANSI
-                    ioSourceFile = New StreamReader(.GetManifestResourceStream("QFIL_Helper.russian.msg"))
-                    sUIMsg = ioSourceFile.ReadToEnd().Split(vbCrLf)
-
-            End Select
-
-        End With
-
-        ioSourceFile.Close()
-        ioSourceFile.Dispose()
-        ioSourceFile = Nothing
+        End Select
 
     End Sub
 
@@ -89,8 +80,8 @@ Public Class clsMsg
         Dim oUnicode As Encoding = Encoding.Unicode
         Dim oASCII As Encoding = Encoding.GetEncoding(1251)
 
-        Dim iaUnicode As Byte() = oUnicode.GetBytes(sUIMsg(iCurID))
-        Dim iaASCII As Byte() = System.Text.Encoding.Convert(oUnicode, oASCII, iaUnicode)
+        Dim iaUnicode As Byte() = oUnicode.GetBytes(gsaUIMsg(iCurID))
+        Dim iaASCII As Byte() = Encoding.Convert(oUnicode, oASCII, iaUnicode)
 
         ConvertToANSI = oASCII.GetString(iaASCII)
         oUnicode = Nothing : oASCII = Nothing
@@ -101,9 +92,9 @@ Public Class clsMsg
     Public ReadOnly Property ID2Msg(ByVal iCurID As Byte) As String
 
         Get
-            Select Case eCurLang
-                Case Language.EN_Lang : Return sUIMsg(iCurID - 1)
-                Case Language.RU_UTF8 : Return sUIMsg(iCurID - 1)
+            Select Case geCurLang
+                Case Language.EN_Lang : Return gsaUIMsg(iCurID - 1)
+                Case Language.RU_UTF8 : Return gsaUIMsg(iCurID - 1)
                 Case Language.RU_ANSI : Return ConvertToANSI(iCurID - 1)
             End Select
         End Get
