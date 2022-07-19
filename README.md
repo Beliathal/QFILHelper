@@ -22,7 +22,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 ◆ Backup hidden partitions
 <ul>
 <li>	Some partitions, like DDR, CDT  (LUN3), DevInfo, Limits (LUN4) are hidden.</li>
-<li>	QFIL Partition manager won't display them nor exported to COM?_PartitionsList.xml.</li>
+<li>	QFIL Partition manager won't display them nor export to PartitionsList.xml.</li>
 <li>	QFIL Helper will attempt to locate and save those partitions.</li>
 </ul>
 
