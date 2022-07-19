@@ -93,7 +93,7 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 
 	Android 9, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
 
-<i>Update: 19-07-2022, v1.0.0.373: Tested sucefully with:</i>
+<i>Update: 19-07-2022, v1.0.0.377: Tested sucefully with:</i>
 
 	Android 10, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
 	
