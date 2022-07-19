@@ -7,32 +7,34 @@ Features:
 ◆ Backup Partitions
 <ul>
 <li>	Performs an automated backup of all aviable partitions. </li>
-<li>	PartitionsList.xml must be up-to-date and placed beside QFILHelper.exe </li>
+<li>	COM?_PartitionsList.xml must be up-to-date </li>
 <li>	Userdata will be skipped due to its size. </li>
 </ul>
 
 ◆ Backup LUNs
 <ul>
-<li>Performs an automated backup of LUNs 0-1-2-4-5</li>
-<li>LUN0 backup will exclude Userdata partition due to its size.</li>
+<li>	Performs an automated backup of LUNs 0-1-2-4-5</li>
+<li>	LUN0 backup will exclude Userdata due to its size.</li>
 </ul>
 
 ◆ Backup hidden partitions
 <ul>
-<li>	Some partitions, like DDR, CDT  (LUN3), DevInfo, Limits (LUN4), are neither displayed nor exported to partitionsList.xml</li>
+<li>	Some partitions, like DDR, CDT  (LUN3), DevInfo, Limits (LUN4) are hidden.</li>
+<li>	QFIL Partition manager won't display them nor exported to COM?_PartitionsList.xml.</li>
 <li>	QFIL Helper will attempt to locate and save those partitions.</li>
 </ul>
 
 ◆ Backup hidden LUNs
 <ul>
-<li>LUNs 3 & 6 aren't shown in the QFIL Partition Manager and there's no possible way for me to calculate their sizes properly for every model of v50/G8.</li>
-<li>In this mode QFIL Helper will query the user for LUN number and its size in sectors</li>
-<li>Use this mode only if you're absolutely sure you know what you doing.</li>
+<li>	LUNs 3 and 6 are hidden and won't show-up in QFIL Partiton Manager.</li>
+<li>	There's no possible way for me to calculate the size of these LUNs properly for every model of v50/G8.</li>
+<li>  QFIL Helper will ask the user to enter LUN number (3,6) and its size in sectors.</li>
+<li>  Use this mode only if you're absolutely sure you know what you doing.</li>
 </ul>
 
 Things to remember:
 
-⚑ It's recommended to place QFIL Helper in the same directory in which QFIL was installed.
+⚑ It's recommended, but not mandatory, to place QFIL Helper in the same directory where QFIL was installed.
 
 	Usualy: C:\Program Files (x86)\Qualcomm\QPST\bin\
 
@@ -42,19 +44,24 @@ Things to remember:
 	then the backup directory would be named like this:
 	
 	Backup-2022-07-20-18-14-44
+	
+⚑ COM?_PartitionsList.xml contains the layout of all partitions in your device and needed for QFIL Helper to function properly. By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in this folder: 
 
-⚑ Always make sure you have generated PartitionsList.xml file from within the QFIL Partition Manager and placed it
-  beside QFIL Helper.
+	C:\Users\Your User Name\AppData\Roaming\Qualcomm\QFIL\
 
-The program was tested with: Android 9, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. I cannot guarantee that it will work in any other configuration, id est: higher android version, different phone model, newer drivers .
+v1.0.0.61 was tested sucefully with: 
+
+Android 9, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
+
+Update: 19-07-2022, v1.0.0.373: Tested sucefully with:
+
+Android 10, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
 
 How to use:
 <ul>
-<li>Place QFILHelper.exe in your QFIL instalation folder</li>
-<i> usually: C:\Program Files (x86)\Qualcomm\QPST\bin </i>
 <li>Connect your phone to the PC in EDL mode</li>
 <li>Launch QFIL and open Partition Manager</li>
 <li>Click on "Save Partition File"</li>
+<li>Keep running QFIL and Partition Manager open</li>
 <li>Run QFIL helper</li>
-<li>Select preferable backup method</li>
 </ul>
