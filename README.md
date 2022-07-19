@@ -65,7 +65,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 	Usualy: C:\Program Files (x86)\Qualcomm\QPST\bin\
 
-⚑ Every time you make a backup with QFIL Helper, it'll be saved in: Backup-Year-Month-Day-Hour-Minute-Seconds
+⚑ Every time you make a backup with QFIL Helper, the files will be saved in: Backup-Year-Month-Day-Hour-Minute-Seconds
 
 	For Example, if today's date is 2022-07-20 and current time is 18:14:44,
 	then the backup directory would be named like this:
@@ -77,7 +77,7 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 
 	C:\Users\Your User Name\AppData\Roaming\Qualcomm\QFIL\
 
-⚑ When flashing firmware, the files must be put in Flash subfolder and named according to one of the following patterns:</li>
+⚑ When flashing firmware, the files must be placed in Flash subfolder and named according to the following patterns:</li>
 			
 	lun#_partition_$.bin; parition_$.bin; partition.bin; lun#.bin;
 		
