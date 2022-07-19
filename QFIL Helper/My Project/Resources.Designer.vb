@@ -61,12 +61,43 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
+        '''  Looks up a localized string similar to abl_a
+        '''abl_b
+        '''boot_a
+        '''boot_b
+        '''laf_a
+        '''laf_b
+        '''xbl_a
+        '''xbl_config_a
+        '''xbl_b
+        '''xbl_config_b.
         '''</summary>
-        Friend ReadOnly Property english() As Byte()
+        Friend ReadOnly Property boot_partitons() As String
             Get
-                Dim obj As Object = ResourceManager.GetObject("english", resourceCulture)
-                Return CType(obj,Byte())
+                Return ResourceManager.GetString("boot_partitons", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to What would you like to do?
+        '''	1-Backup partitions
+        '''	2-Backup hidden partitions
+        '''	3-Backup LUNs
+        '''	4-Backup hidden LUNs (manual)
+        '''	Q-Quit
+        '''Invalid input, please try again...
+        '''Something went wrong! Unable to parse the line: 
+        '''Something went wrong! Unable to calculate size of LUN: 
+        '''Saving: 
+        '''Error: fh_loader is unable to communicate to the COM Port!
+        '''	Things to check:
+        '''	1. Have you connected your phone to the PC?
+        '''	2. Have you put your phone in the EDL mode?
+        '''	3. Have you run QFIL and loaded the partition manag [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property english() As String
+            Get
+                Return ResourceManager.GetString("english", resourceCulture)
             End Get
         End Property
         
@@ -103,12 +134,38 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
+        '''  Looks up a localized string similar to Выберете задачу:
+        '''	1-Сохранить разделы
+        '''	2-Сохранить скрытые разделы
+        '''	3-Сохранить диски (LUN)
+        '''	4-Сохранить скрытые диски (вручную)
+        '''	Q-Выход
+        '''Неверный ввод, попробуйте еще раз...
+        '''Что-то пошло не так! Не могу выполнить парсинг этой строчки: 
+        '''Что-то пошло не так! Не могу вычислить размеры логического диска: 
+        '''Сохраняю: 
+        '''Ошибка: fh_loader не может связаться с COM-портом!
+        '''	Проверьте и убедитесь что:
+        '''	1. Ваш телефон подключен к компьютеру
+        '''	2. Телефон находится в режиме EDL
+        '''	3. Программа QFIL запущенна и [rest of string was truncated]&quot;;.
         '''</summary>
-        Friend ReadOnly Property russian() As Byte()
+        Friend ReadOnly Property russian() As String
             Get
-                Dim obj As Object = ResourceManager.GetObject("russian", resourceCulture)
-                Return CType(obj,Byte())
+                Return ResourceManager.GetString("russian", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ftm
+        '''modemst1
+        '''modemst2
+        '''fsg
+        '''fsc.
+        '''</summary>
+        Friend ReadOnly Property vital_partitions() As String
+            Get
+                Return ResourceManager.GetString("vital_partitions", resourceCulture)
             End Get
         End Property
     End Module
