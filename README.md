@@ -1,4 +1,4 @@
-<b>QFIL Helper</b> is a console app created out of the necessity to automate the process of partition backup with QFIL utility.  As one of the “lucky” owners of the sprint branded LG v50, I was faced with the grim prospect of making manual backup of every available partition, every time I’d want to upgrade, downgrade, tфmper with the system files or mess with Magisk modules. 
+<b>QFIL Helper</b> is a console app created out of the necessity to automate the process of partition backup with QFIL utility.  As one of the “lucky” owners of the sprint branded LG v50, I was faced with the grim prospect of making manual backup of every available partition, every time I’d want to upgrade, downgrade, tamper with the system files or mess with Magisk modules. 
 
 While researching this subject, I've stumbled upon [this guide](https://forum.xda-developers.com/t/tutorial-full-flash-backup-and-restore.4362809/) explaining in great detail how to use fh_loader.exe supplied within QFIL (QPST) utility. Then I've decided to take it one step further and automate the entire process…
 
@@ -7,13 +7,13 @@ Features:
 ◆ Backup Partitions
 <ul>
 <li>	Performs an automated backup of all aviable partitions. </li>
-<li>	COM?_PartitionsList.xml must be up-to-date </li>
+<li>	COM?_PartitionsList.xml must be up-to-date. </li>
 <li>	Userdata will be skipped due to its size. </li>
 </ul>
 
 ◆ Backup LUNs
 <ul>
-<li>	Performs an automated backup of LUNs 0-1-2-4-5</li>
+<li>	Performs an automated backup of LUNs 0-1-2-4-5.</li>
 <li>	LUN0 backup will exclude Userdata due to its size.</li>
 </ul>
 
@@ -45,17 +45,18 @@ Things to remember:
 	
 	Backup-2022-07-20-18-14-44
 	
-⚑ COM?_PartitionsList.xml contains the layout of all partitions in your device and needed for QFIL Helper to function properly. By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in this folder: 
+⚑ COM?_PartitionsList.xml contains the layout of all partitions in your device and is needed for QFIL Helper to function properly. 
+By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in this folder: 
 
 	C:\Users\Your User Name\AppData\Roaming\Qualcomm\QFIL\
 
-v1.0.0.61 was tested sucefully with: 
+<i>v1.0.0.61 was tested sucefully with:</i>
 
-Android 9, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
+	Android 9, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
 
-Update: 19-07-2022, v1.0.0.373: Tested sucefully with:
+<i>Update: 19-07-2022, v1.0.0.373: Tested sucefully with:</i>
 
-Android 10, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
+	Android 10, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
 
 How to use:
 <ul>
