@@ -52,8 +52,9 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 ◆ Flash firmware
 <ul>
-<li>	QFIL Helper flash all *.bin files it finds in Flash folder. </li>
-<li>	You can flash files backed-up by QFIL Helper or 3rd party images like Engineering ABL. </li>
+<li>	Restore your partitions backup.</li>
+<li>	Restore your LUN backup.</li>
+<li>	Flash 3rd party images like Engineering ABL.</li>
 </ul>
 
 <hr>
@@ -76,8 +77,7 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 
 	C:\Users\Your User Name\AppData\Roaming\Qualcomm\QFIL\
 
-
-⚑ When flashing firmware images the files must be be named according to one of these pattern:</li>
+⚑ When flashing firmware the files must be put in Flash subfolder and named according to one of the following patterns:</li>
 			
 	lun#_partition_$.bin; parition_$.bin; partition.bin; lun#.bin;
 		
