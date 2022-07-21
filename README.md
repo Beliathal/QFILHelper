@@ -89,9 +89,9 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 	abl_a.bin - will be also flashed into LUN4, Slot A.
 	lun4.bin - will flash entire LUN4
 	
-⚑ Starting with v1.0.0.500 the option to flash entire LUNs is disabled by default. The program would flash only partition images. To enable flashing on entire LUN images, use this command line argument: <b>-advanced</b>
+⚑ Starting with v1.0.0.500 the option to flash entire LUNs is disabled by default. The program would flash only partition images. To enable flashing of entire LUN images, use this command line argument: <b>-advanced</b>
 
-⚑ Starting with v1.0.0.500 the option options to backup hidden LUNs and hidden partitons are disabled by default. To enable, use this command line argument: <b>-hidden</b>
+⚑ Starting with v1.0.0.500 the options to backup hidden LUNs and hidden partitons are disabled by default. To enable, use this command line argument: <b>-hidden</b>
 	
 <hr>
 
