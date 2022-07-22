@@ -65,8 +65,8 @@ Public Class clsVital : Inherits clsHLUNs
         Function(x As String) (x.Contains(sPName)))
 
         If LocatePartition = -1 Then
-            Console.WriteLine(goUILang.ID2Msg(28) & sPName)
-            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.WriteLine(goSpeaker.ID2Msg(28) & sPName)
+            Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey(True)
         End If
 
@@ -80,12 +80,12 @@ Public Class clsVital : Inherits clsHLUNs
 
             ' vbCrLf.ToArray: Would return an array of 2 elements Cr, Lf
 
-            saPLookUp = My.Resources.boot_partitons.Split( _
+            saPLookUp = My.Resources.list_boot.Split( _
                 vbCrLf.ToArray, StringSplitOptions.RemoveEmptyEntries)
 
         Else
 
-            saPLookUp = My.Resources.vital_partitions.Split( _
+            saPLookUp = My.Resources.list_vital.Split( _
                 vbCrLf.ToArray, StringSplitOptions.RemoveEmptyEntries)
 
         End If

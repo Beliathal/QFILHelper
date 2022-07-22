@@ -4,7 +4,7 @@ Imports Microsoft.VisualBasic
 Public Class clsHLUNs : Inherits clsLUNs
 
     Private ReturnPossibleSects As Func(Of Byte, String) = _
-    Function(iCurLUN As Byte) goUILang.ID2Msg(23).Replace("@", SuggestSectors(iCurLUN))
+    Function(iCurLUN As Byte) goSpeaker.ID2Msg(23).Replace("@", SuggestSectors(iCurLUN))
 
 
     ' There's no way to know the exact number of sectors contained within them hidden LUNs, 
@@ -35,7 +35,7 @@ Public Class clsHLUNs : Inherits clsLUNs
                 Case 0
 
                     Console.Clear()
-                    Console.WriteLine(goUILang.ID2Msg(22))
+                    Console.WriteLine(goSpeaker.ID2Msg(22))
                     sCurInput = Console.ReadLine
 
                     If Not Byte.TryParse(sCurInput, iCurLUN) _
@@ -51,8 +51,8 @@ Public Class clsHLUNs : Inherits clsLUNs
 
                 Case 2
 
-                    LUN = iCurLUN
-                    Sectors = iCurSectors
+                    setLUN = iCurLUN
+                    setSectors = iCurSectors
                     sCMDLine = BuildCommand()
                     iCurStep = 0
 
@@ -60,7 +60,7 @@ Public Class clsHLUNs : Inherits clsLUNs
 
                 Case -2 To -1
 
-                    Console.WriteLine(goUILang.ID2Msg(7) & vbCrLf)
+                    Console.WriteLine(goSpeaker.ID2Msg(25) & vbCrLf)
                     iCurStep += 2
 
             End Select
@@ -79,7 +79,7 @@ Public Class clsHLUNs : Inherits clsLUNs
         ' fh_loader.exe --port=\\.\COM --convertprogram2read --sendimage=lun3_hidden_s-6.bin --start_sector=0 
         '--lun=1 --num_sectors=2048 --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs
 
-        Dim sCurLabel As String = DirWithSlash & "lun" & gsLUN & HiddenLUN & ".bin"
+        Dim sCurLabel As String = getDirWSlash & "lun" & gsLUN & getHLString & ".bin"
 
         BuildCommand = "--port=\\.\" & gsCOMPort & _
                        " --convertprogram2read --sendimage=" & sCurLabel & _
@@ -88,7 +88,7 @@ Public Class clsHLUNs : Inherits clsLUNs
                        " --num_sectors=" & gsSectors & _
                        " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
 
-        Console.WriteLine(goUILang.ID2Msg(24) & "hidden LUN: " & gsLUN & _
+        Console.WriteLine(goSpeaker.ID2Msg(24) & "hidden LUN: " & gsLUN & _
                           " | Sectors: " & gsSectors & vbNewLine)
 
     End Function

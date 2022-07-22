@@ -5,15 +5,23 @@ Imports Microsoft.VisualBasic
 Public Class clsMsg
     Private Enum Language As Byte
         EN_Lang = 0
-        RU_UTF8 = 1
-        RU_ANSI = 2
+        RU_Lang = 1
     End Enum
 
-    Private gsaUIMsg() As String
+    Private gsaMsgData() As String
+    Private gsaMnuData() As String
     Private geCurLang As Language
+    Private isUTF8 As Boolean
 
-    ' Set to true to test russian lang
-    Private isRULangTest As Boolean = False
+    Public gbAdvEnabled As Boolean ' Enable advanced options
+    Public gbHdnEnabled As Boolean ' Enable menu entries for hidden partitions & luns
+    Public gbNarEnabled As Boolean ' Enable narrow menus
+
+    ' Run programm with arguments:
+    '-ru - sets language to Russian ANSI
+    '-ru -utf8 - sets language to Russian UTF-8
+    '-hidden - enables hidden partitions and hidden LUN backup functions
+    '-advanced - enables flashing of entire LUN
 
     Public Function ParseArguments(ByRef sCurLang() As String) As Boolean
 
@@ -21,81 +29,119 @@ Public Class clsMsg
 
             geCurLang = Language.EN_Lang
             LoadMessages()
+            LoadMenus()
             Return True
 
-        ElseIf sCurLang(0).ToLower = "-ru" Then
-
-            If sCurLang.Length = 1 Then
-
-                geCurLang = Language.RU_ANSI
-                LoadMessages()
-                Return True
-
-            ElseIf sCurLang(1).ToLower = "-utf8" Then
-
-                Console.OutputEncoding = Encoding.UTF8
-                geCurLang = Language.RU_UTF8
-                LoadMessages()
-                Return True
-
-            Else
-
-                Console.WriteLine("Ivalid arguments")
-                Console.ReadKey(True)
-                Return False
-
-            End If
-
-        Else
-
-            Console.WriteLine("Ivalid arguments")
-            Console.ReadKey(True)
-            Return False
-
         End If
+
+        For Each sCurArg As String In sCurLang
+
+            Select Case sCurArg
+
+                Case "-ru" : geCurLang = Language.RU_Lang
+                Case "-utf8" : isUTF8 = True
+                Case "-advanced" : gbAdvEnabled = True
+                Case "-hidden" : gbHdnEnabled = True
+                Case "-narrow" : gbNarEnabled = True
+                Case "-red" : Console.ForegroundColor = ConsoleColor.Red
+
+                Case Else
+
+                    Console.WriteLine("Ivalid arguments")
+                    Console.ReadKey(True)
+                    Return False
+
+            End Select
+
+        Next
+
+        If geCurLang = Language.RU_Lang And isUTF8 Then _
+             Console.OutputEncoding = Encoding.UTF8 _
+        Else Console.OutputEncoding = Encoding.GetEncoding(1251)
+
+        LoadMessages()
+        LoadMenus()
+        Return True
 
     End Function
 
     Private Sub LoadMessages()
 
-        If isRULangTest Then
-            geCurLang = Language.RU_UTF8
-            Console.OutputEncoding = Encoding.UTF8
-        End If
-
         Select Case geCurLang
-
-            Case Language.EN_Lang
-                gsaUIMsg = My.Resources.english.Split(vbCrLf)
-
-            Case Language.RU_UTF8, Language.RU_ANSI
-                gsaUIMsg = My.Resources.russian.Split(vbCrLf)
-
+            Case Language.EN_Lang : gsaMsgData = My.Resources.msg_en.Split(vbCrLf)
+            Case Language.RU_Lang : gsaMsgData = My.Resources.msg_ru.Split(vbCrLf)
         End Select
 
     End Sub
 
-    Private Function ConvertToANSI(ByVal iCurID As Byte) As String
+    Private Sub LoadMenus()
+
+        Dim saTemp() As String
+
+        Select Case geCurLang
+            Case Language.EN_Lang : saTemp = My.Resources.menu_en.Split("#")
+            Case Language.RU_Lang : saTemp = My.Resources.menu_ru.Split("#")
+        End Select
+
+        Select Case gbHdnEnabled
+            Case True
+                gsaMnuData = saTemp(0).Split(vbCrLf.ToCharArray, _
+                                             StringSplitOptions.RemoveEmptyEntries)
+            Case False
+                gsaMnuData = saTemp(1).Split(vbCrLf.ToCharArray, _
+                                             StringSplitOptions.RemoveEmptyEntries)
+        End Select
+
+        saTemp = Nothing
+
+    End Sub
+
+    Private Function TextToANSI(ByRef sCurText As String) As String
+
+        If isUTF8 Then Return sCurText
 
         Dim oUnicode As Encoding = Encoding.Unicode
         Dim oASCII As Encoding = Encoding.GetEncoding(1251)
 
-        Dim iaUnicode As Byte() = oUnicode.GetBytes(gsaUIMsg(iCurID))
+        Dim iaUnicode As Byte() = oUnicode.GetBytes(sCurText)
         Dim iaASCII As Byte() = Encoding.Convert(oUnicode, oASCII, iaUnicode)
 
-        ConvertToANSI = oASCII.GetString(iaASCII)
+        TextToANSI = oASCII.GetString(iaASCII)
         oUnicode = Nothing : oASCII = Nothing
         iaUnicode = Nothing : iaASCII = Nothing
 
     End Function
 
-    Public ReadOnly Property ID2Msg(ByVal iCurID As Byte) As String
+    Public Function ID2Msg(ByVal iCurID As Byte) As String
+
+        Select Case geCurLang
+            Case Language.EN_Lang : Return gsaMsgData(iCurID - 1)
+            Case Language.RU_Lang : Return TextToANSI(gsaMsgData(iCurID - 1))
+        End Select
+
+    End Function
+
+    Public Function ID2Menu(ByVal iCurID As Byte) As String
+
+        Select Case geCurLang
+            Case Language.EN_Lang : Return gsaMnuData(iCurID - 1).Replace("@", iCurID)
+            Case Language.RU_Lang : Return TextToANSI(gsaMnuData(iCurID - 1)).Replace("@", iCurID)
+        End Select
+
+    End Function
+
+    Public ReadOnly Property getMenuCount() As Byte
+        Get
+            Return gsaMnuData.Count
+        End Get
+    End Property
+
+    Public ReadOnly Property getTitleLine() As String
 
         Get
-            Select Case geCurLang
-                Case Language.EN_Lang : Return gsaUIMsg(iCurID - 1)
-                Case Language.RU_UTF8 : Return gsaUIMsg(iCurID - 1)
-                Case Language.RU_ANSI : Return ConvertToANSI(iCurID - 1)
+            Select Case gbAdvEnabled
+                Case True : getTitleLine = ID2Msg(2).Replace("@", My.Application.Info.Version.ToString)
+                Case False : getTitleLine = ID2Msg(3).Replace("@", My.Application.Info.Version.ToString)
             End Select
         End Get
 

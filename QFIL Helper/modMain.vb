@@ -19,7 +19,7 @@ Imports Microsoft.VisualBasic
 
 Module modMain
 
-    Public goUILang As clsMsg ' Parsing command line arguments, loading language related strings
+    Public goSpeaker As clsMsg ' CMD arguments, errors, warnings, language related settings
 
     Sub Main(args As String())
 
@@ -29,20 +29,20 @@ Module modMain
         If Debugger.IsAttached Then _
             Console.ForegroundColor = ConsoleColor.Red
 
-        goUILang = New clsMsg
+        goSpeaker = New clsMsg
 
-        If goUILang.ParseArguments(args) Then MainMenu()
+        If goSpeaker.ParseArguments(args) Then _
+                If goSpeaker.gbHdnEnabled Then MainMenuFull() _
+                Else MainMenuSimple()
 
-        goUILang = Nothing
+        goSpeaker = Nothing
         args = Nothing
-
-        End
 
     End Sub
 
-    Private Sub MainMenu()
+    Private Sub MainMenuSimple()
 
-        Dim oPProcessor As New clsFlash
+        Dim oHelper As New clsFlash
         Dim cCurKey As Char
 
         Do
@@ -50,75 +50,125 @@ Module modMain
             Select Case cCurKey
 
                 Case ""
-
-                    Console.Clear()
-                    Console.WriteLine(goUILang.ID2Msg(1) & vbCrLf)
-                    Console.WriteLine(goUILang.ID2Msg(2))
-                    Console.WriteLine(goUILang.ID2Msg(3))
-                    Console.WriteLine(goUILang.ID2Msg(4))
-                    Console.WriteLine(goUILang.ID2Msg(5))
-                    Console.WriteLine(goUILang.ID2Msg(25))
-                    Console.WriteLine(goUILang.ID2Msg(35))
-                    Console.WriteLine(goUILang.ID2Msg(26))
-                    Console.WriteLine(goUILang.ID2Msg(36))
-                    Console.WriteLine(goUILang.ID2Msg(6) & vbCrLf)
-
-                    cCurKey = Console.ReadKey(True).KeyChar
+                    cCurKey = BuildMenu(False)
 
                 Case "1"
                     Console.Clear()
-                    oPProcessor.BackupPartitions()
+                    oHelper.BackupPartitions()
                     cCurKey = ""
 
                 Case "2"
                     Console.Clear()
-                    oPProcessor.BackupLUNs()
+                    oHelper.BackupLUNs()
                     cCurKey = ""
 
                 Case "3"
                     Console.Clear()
-                    oPProcessor.FindHiddenParts()
+                    oHelper.BackupBootParts()
                     cCurKey = ""
 
                 Case "4"
                     Console.Clear()
-                    oPProcessor.BackupHiddenLUNs()
+                    oHelper.BackupIMEIParts()
                     cCurKey = ""
 
                 Case "5"
                     Console.Clear()
-                    oPProcessor.BackupBootParts()
+                    oHelper.QueryCOMPorts()
                     cCurKey = ""
 
                 Case "6"
                     Console.Clear()
-                    oPProcessor.BackupIMEIParts()
+                    oHelper.FlashFirmware()
                     cCurKey = ""
-
-                Case "7"
-                    Console.Clear()
-                    oPProcessor.QueryCOMPorts()
-                    cCurKey = ""
-
-                Case "8"
-                    Console.Clear()
-                    oPProcessor.FlashFirmware()
-                    cCurKey = ""
-
-                Case "Q", "q"
-                    'do nothing
 
                 Case Else
-
-                    Console.WriteLine(goUILang.ID2Msg(7))
-                    cCurKey = Console.ReadKey(True).KeyChar
+                    cCurKey = BuildMenu(True)
 
             End Select
 
         Loop Until cCurKey = "Q" OrElse cCurKey = "q"
 
-        oPProcessor = Nothing
+        oHelper = Nothing
 
     End Sub
+
+    Private Sub MainMenuFull()
+
+        Dim oHelper As New clsFlash
+        Dim cCurKey As Char
+
+        Do
+
+            Select Case cCurKey
+
+                Case ""
+                    cCurKey = BuildMenu(False)
+
+                Case "1"
+                    Console.Clear()
+                    oHelper.BackupPartitions()
+                    cCurKey = ""
+
+                Case "2"
+                    Console.Clear()
+                    oHelper.BackupLUNs()
+                    cCurKey = ""
+
+                Case "3"
+                    Console.Clear()
+                    oHelper.FindHiddenParts()
+                    cCurKey = ""
+
+                Case "4"
+                    Console.Clear()
+                    oHelper.BackupHiddenLUNs()
+                    cCurKey = ""
+
+                Case "5"
+                    Console.Clear()
+                    oHelper.BackupBootParts()
+                    cCurKey = ""
+
+                Case "6"
+                    Console.Clear()
+                    oHelper.BackupIMEIParts()
+                    cCurKey = ""
+
+                Case "7"
+                    Console.Clear()
+                    oHelper.QueryCOMPorts()
+                    cCurKey = ""
+
+                Case "8"
+                    Console.Clear()
+                    oHelper.FlashFirmware()
+                    cCurKey = ""
+
+                Case Else
+                    cCurKey = BuildMenu(True)
+
+            End Select
+
+        Loop Until cCurKey = "Q" OrElse cCurKey = "q"
+
+        oHelper = Nothing
+
+    End Sub
+
+    Private Function BuildMenu(ByVal isError As Boolean) As Char
+
+        Console.Clear()
+        Console.WriteLine(goSpeaker.getTitleLine & vbCrLf)
+
+        For iCnt As Byte = 1 To goSpeaker.getMenuCount
+            'Console.WriteLine(goSpeaker.ID2Menu(iCnt) & vbCrLf)
+            Console.WriteLine(goSpeaker.ID2Menu(iCnt) & IIf(goSpeaker.gbNarEnabled, "", vbCrLf))
+        Next
+
+        If isError Then Console.Write(goSpeaker.ID2Msg(25))
+        BuildMenu = Console.ReadKey(True).KeyChar
+
+    End Function
 
 End Module

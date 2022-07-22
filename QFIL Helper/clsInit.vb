@@ -7,6 +7,7 @@ Public Class clsInit : Inherits clsInfo
     Protected gsCOMPort As String
     Protected gsFileName As String
     Protected gsDirName As String
+    Protected gsFHLoader As String
 
     Protected ResetBackupDate As Action = _
         Sub() gsDirName = "Backup-" & Format(System.DateTime.Now, "yyyy-MM-dd-hhmmss")
@@ -16,15 +17,18 @@ Public Class clsInit : Inherits clsInfo
 
     Private ReturnProgramFiles As Func(Of String) = _
         Function() GetFolderPath(SpecialFolder.ProgramFilesX86) _
-                    & "\Qualcomm\QPST\bin\" & gsCOMPort & "_PartitionsList.xml"
+                    & "\Qualcomm\QPST\bin\fh_loader.exe"
 
     Private ReturnRoaming As Func(Of String) = _
         Function() GetFolderPath(SpecialFolder.ApplicationData) _
                     & "\Qualcomm\QFIL\" & gsCOMPort & "_PartitionsList.xml"
 
+    Private InitFileName As Action = _
+        Sub() gsFileName = gsCOMPort & "_PartitionsList.xml"
+
     Public Sub QueryCOMPorts()
 
-        Dim cCurKey As Char
+        'Dim cCurKey As Char
         Dim tCOMPort = New Timers.Timer
 
         tCOMPort.AutoReset = True
@@ -32,12 +36,13 @@ Public Class clsInit : Inherits clsInfo
         AddHandler tCOMPort.Elapsed, AddressOf WaitForCOMPort
         tCOMPort.Start()
 
-        Do
+        'Do
 
-            Console.WriteLine(goUILang.ID2Msg(30))
-            cCurKey = Console.ReadKey(True).KeyChar
+        Console.WriteLine(goSpeaker.ID2Msg(30))
+        Console.ReadKey(True)
 
-        Loop Until cCurKey = "Q" OrElse cCurKey = "q"
+        'cCurKey = Console.ReadKey(True).KeyChar
+        'Loop Until cCurKey = "Q" OrElse cCurKey = "q"
 
         tCOMPort.Enabled = False
         tCOMPort.Stop()
@@ -61,7 +66,7 @@ Public Class clsInit : Inherits clsInfo
                 eColor = Console.ForegroundColor
                 Console.ForegroundColor = ConsoleColor.Yellow
                 'Console.SetCursorPosition(0, Console.CursorTop - 1)
-                Console.Write(goUILang.ID2Msg(31))
+                Console.Write(goSpeaker.ID2Msg(31))
                 Console.ForegroundColor = eColor
                 Console.CursorTop -= 1
 
@@ -72,7 +77,7 @@ Public Class clsInit : Inherits clsInfo
                 eColor = Console.ForegroundColor
                 Console.ForegroundColor = Console.BackgroundColor
                 'Console.SetCursorPosition(0, Console.CursorTop - 1)
-                Console.Write(goUILang.ID2Msg(31))
+                Console.Write(goSpeaker.ID2Msg(31))
                 Console.ForegroundColor = eColor
                 Console.CursorTop -= 1
 
@@ -90,12 +95,12 @@ Public Class clsInit : Inherits clsInfo
             eColor = Console.ForegroundColor
             Console.ForegroundColor = Console.BackgroundColor
             'Console.SetCursorPosition(0, Console.CursorTop - 1)
-            Console.Write(goUILang.ID2Msg(31))
+            Console.Write(goSpeaker.ID2Msg(31))
             Console.ForegroundColor = eColor
             Console.CursorTop -= 1
 
             Console.ForegroundColor = ConsoleColor.Green
-            Console.WriteLine(goUILang.ID2Msg(32) & sPortName)
+            Console.WriteLine(goSpeaker.ID2Msg(32) & sPortName)
             Console.ForegroundColor = eColor
 
         End If
@@ -132,9 +137,9 @@ Public Class clsInit : Inherits clsInfo
         ' Is there a Qualcomm device connected?
         If Not isCOMPort(gsCOMPort) Then
 
-            Console.WriteLine(goUILang.ID2Msg(33))
-            Console.WriteLine(goUILang.ID2Msg(34))
-            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.WriteLine(goSpeaker.ID2Msg(33))
+            Console.WriteLine(goSpeaker.ID2Msg(34))
+            Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey(True)
             Return False
 
@@ -143,8 +148,8 @@ Public Class clsInit : Inherits clsInfo
         ' Attempt to extract COM port number
         If Not ParseCOMPortNumber(gsCOMPort) Then
 
-            Console.WriteLine(goUILang.ID2Msg(27))
-            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.WriteLine(goSpeaker.ID2Msg(27))
+            Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey(True)
             Return False
 
@@ -153,8 +158,8 @@ Public Class clsInit : Inherits clsInfo
         ' Is there a PartitionsList file with mathing COM port number?
         If Not LocatePartitionsList() Then
 
-            Console.WriteLine(goUILang.ID2Msg(19))
-            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.WriteLine(goSpeaker.ID2Msg(19))
+            Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey(True)
             Return False
 
@@ -163,9 +168,9 @@ Public Class clsInit : Inherits clsInfo
         ' Has the user lunched QFIL.exe?
         If Process.GetProcessesByName("QFIL").Count = 0 Then
 
-            Console.WriteLine(goUILang.ID2Msg(41))
-            Console.WriteLine(goUILang.ID2Msg(42))
-            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.WriteLine(goSpeaker.ID2Msg(41))
+            Console.WriteLine(goSpeaker.ID2Msg(42))
+            Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey(True)
             Return False
 
@@ -174,19 +179,7 @@ Public Class clsInit : Inherits clsInfo
         ' Is PartitionsList.xml file older than 1 day?
         If Not OutdatedWarning() Then Return False
 
-        ' IF fh_loader is missing in QFIL instalation folder
-
-        If Not File.Exists("fh_loader.exe") Then
-            File.WriteAllBytes("fh_loader.exe", My.Resources.fh_loader)
-        End If
-
-        ' The reason why I preffer not to use the attached fh_loader is because 
-        ' the urser's build of the QFIL might differ from the one I'm using and 
-        ' the attached fh_loader might not function correctly.
-
-        If Not Directory.Exists("Flash") Then _
-            Directory.CreateDirectory("Flash")
-
+        LocateFHLoader()
         Return True
 
     End Function
@@ -224,29 +217,20 @@ Public Class clsInit : Inherits clsInfo
         Next
 
         If Not isPartitionList Then
-            Console.WriteLine(goUILang.ID2Msg(19))
-            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.WriteLine(goSpeaker.ID2Msg(19))
+            Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey()
             Return False
 
         ElseIf Not ParseCOMPortNumber() Then
-            Console.WriteLine(goUILang.ID2Msg(27))
-            Console.WriteLine(goUILang.ID2Msg(21))
+            Console.WriteLine(goSpeaker.ID2Msg(27))
+            Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey()
             Return False
 
         End If
 
-        ' IF fh_loader is missing in QFIL instalation folder
-
-        If Not File.Exists("fh_loader.exe") Then
-            File.WriteAllBytes("fh_loader.exe", My.Resources.fh_loader)
-        End If
-
-        ' The reason why I preffer not to use the attached fh_loader is because 
-        ' the urser's build of the QFIL might differ from the one I'm using and 
-        ' the attached fh_loader might not function correctly.
-
+        LocateFHLoader()
         Return True
 
     End Function
@@ -295,7 +279,7 @@ Public Class clsInit : Inherits clsInfo
 
         ResetBackupDate()
         Directory.CreateDirectory(gsDirName)
-        FileSystem.FileCopy(gsFileName, DirWithSlash & gsFileName)
+        FileSystem.FileCopy(gsFileName, getDirWSlash & gsFileName)
 
     End Sub
 
@@ -311,7 +295,7 @@ Public Class clsInit : Inherits clsInfo
 
     End Sub
 
-    Protected ReadOnly Property DirWithSlash() As String
+    Protected ReadOnly Property getDirWSlash() As String
 
         Get
             Return gsDirName & "\"
@@ -323,15 +307,15 @@ Public Class clsInit : Inherits clsInfo
 
         If CalcDaysDif() = 0 Then Return True
 
-        Dim sLine1 As String = goUILang.ID2Msg(43).Replace("$", gsFileName)
-        Dim sLine2 As String = goUILang.ID2Msg(44).Replace("@", Now.ToShortDateString)
+        Dim sLine1 As String = goSpeaker.ID2Msg(43).Replace("$", gsFileName)
+        Dim sLine2 As String = goSpeaker.ID2Msg(44).Replace("@", Now.ToShortDateString)
 
         sLine1 = sLine1.Replace("@", File.GetLastWriteTime(gsFileName).ToShortDateString)
 
         Console.WriteLine(sLine1)
         Console.WriteLine(sLine2)
-        Console.WriteLine(goUILang.ID2Msg(45))
-        Console.WriteLine(goUILang.ID2Msg(46))
+        Console.WriteLine(goSpeaker.ID2Msg(45))
+        Console.WriteLine(goSpeaker.ID2Msg(46))
 
         If Console.ReadKey(True).Key <> _
             ConsoleKey.Y Then Return False
@@ -346,33 +330,29 @@ Public Class clsInit : Inherits clsInfo
     Protected Sub ProcessCompletedMsg()
 
         If gbFailed Then _
-             Console.WriteLine(goUILang.ID2Msg(47)) _
-        Else Console.WriteLine(goUILang.ID2Msg(48))
+             Console.WriteLine(goSpeaker.ID2Msg(47)) _
+        Else Console.WriteLine(goSpeaker.ID2Msg(48))
 
-        Console.WriteLine(goUILang.ID2Msg(17))
+        Console.WriteLine(goSpeaker.ID2Msg(17))
         Console.ReadKey(True)
 
     End Sub
 
+    '1. Is there a PartitionsList.xml at System Drive:\Users\Username\AppData\Roaming\Qualcomm\QFIL\ ?
+    '2. Is there a PartitionsList.xml at System Drive:\Program Files (x86)\Qualcomm\QPST\bin\ ?
+    '3. Is there a PartitionsList.xml at Current Directory?
+
     Private Function LocatePartitionsList() As Boolean
-
-        If File.Exists(gsCOMPort & "_PartitionsList.xml") Then
-
-            gsFileName = gsCOMPort & "_PartitionsList.xml"
-            Return True
-
-        End If
 
         ' Environment.SpecialFolder.ApplicationData - Roaming
         ' Environment.SpecialFolder.LocalApplicationData - Local
         ' Environment.SpecialFolder.ProgramFilesX86
         ' Environment.GetEnvironmentVariable("ProgramFiles(x86)")
 
-        Dim sSrcFile As String = ReturnRoaming()
-        Dim sDstFile As String = Directory.GetCurrentDirectory()
+        InitFileName()
 
-        gsFileName = gsCOMPort & "_PartitionsList.xml"
-        sDstFile &= "\" & gsCOMPort & "_PartitionsList.xml"
+        Dim sSrcFile As String = ReturnRoaming()
+        Dim sDstFile As String = Directory.GetCurrentDirectory() & "\" & gsFileName
 
         If File.Exists(sSrcFile) Then
 
@@ -381,15 +361,38 @@ Public Class clsInit : Inherits clsInfo
 
         End If
 
-        sSrcFile = ReturnProgramFiles()
+        ' sSrcFile = ReturnProgramFiles()
 
-        If File.Exists(ReturnProgramFiles()) Then
+        ' If File.Exists(sSrcFile) Then
 
-            File.Copy(sSrcFile, sDstFile, True)
-            Return True
+        '   File.Copy(sSrcFile, sDstFile, True)
+        '   Return True
 
-        End If
+        ' End If
+
+        ' If a copy exists withing QFIL Helper folder
+
+        If File.Exists(gsFileName) Then Return True
 
     End Function
+
+    Private Sub LocateFHLoader()
+
+        gsFHLoader = ReturnProgramFiles()
+
+        If File.Exists(gsFHLoader) Then Exit Sub
+
+        ' IF fh_loader is missing in QFIL instalation folder
+
+        If Not File.Exists("fh_loader.exe") Then
+            File.WriteAllBytes("fh_loader.exe", My.Resources.fh_loader)
+            gsFHLoader = "fh_loader.exe"
+        End If
+
+        ' The reason why I preffer not to use the attached fh_loader is because 
+        ' the urser's build of the QFIL might differ from the one I'm using and 
+        ' the attached fh_loader might not function correctly.
+
+    End Sub
 
 End Class

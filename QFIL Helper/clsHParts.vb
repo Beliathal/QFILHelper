@@ -40,7 +40,7 @@ Public Class clsHParts : Inherits clsParts
                     If Not iLastLUN.HasValue OrElse giLUN > iLastLUN Then
 
                         iLastLUN = giLUN
-                        iLastSector = Size
+                        iLastSector = getSize
                         Continue While
 
                     End If
@@ -50,15 +50,15 @@ Public Class clsHParts : Inherits clsParts
                         ' Hidden Start = Previous Start + Sectors [iLastSector]
                         ' Hidden Sectors = New Start - (Previous Start + Previous Sectors)
 
-                        Sectors = giStart - iLastSector
-                        Start = iLastSector
+                        setSectors = giStart - iLastSector
+                        setStart = iLastSector
                         sCMDLine = BuildCommand()
 
                         If Not ExecuteCommand(sCMDLine) Then Exit While
 
                     End If
 
-                    iLastSector = Size
+                    iLastSector = getSize
 
                 End If
             End If
@@ -80,7 +80,7 @@ Public Class clsHParts : Inherits clsParts
         ' --start_sector=6 --lun=0  --num_sectors=8192 --noprompt --showpercentagecomplete --zlpawarehost=1 
         ' --memoryname=ufs
 
-        Dim sCurLabel As String = DirWithSlash & "lun" & gsLUN & HiddenPart & ".bin"
+        Dim sCurLabel As String = getDirWSlash & "lun" & gsLUN & getHPString & ".bin"
 
         BuildCommand = "--port=\\.\" & gsCOMPort & _
                        " --convertprogram2read --sendimage=" & sCurLabel & _
@@ -89,7 +89,7 @@ Public Class clsHParts : Inherits clsParts
                        " --num_sectors=" & gsSectors & _
                        " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
 
-        Console.WriteLine(goUILang.ID2Msg(10) & "hidden partition at" & _
+        Console.WriteLine(goSpeaker.ID2Msg(36) & "hidden partition at" & _
                           " LUN: " & gsLUN & _
                           " | Start: " & gsStart & _
                           " | Sectors: " & gsSectors & _

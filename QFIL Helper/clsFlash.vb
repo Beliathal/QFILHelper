@@ -4,11 +4,11 @@ Imports Microsoft.VisualBasic
 Public Class clsFlash : Inherits clsVital
 
     Private ExtractFileName As Func(Of String, String) = _
-        Function(sCurName As String) sCurName.Replace(DirWithSlash, "").ToLower
+        Function(sCurName As String) sCurName.Replace(getDirWSlash, "").ToLower
 
     Public Sub FlashFirmware()
 
-        ' If Not ValidateFiles_Debug() Then Exit Sub
+        'If Not ValidateFiles_Debug() Then Exit Sub
         If Not ValidateFiles() Then Exit Sub
 
         Dim saFileList() As String
@@ -31,7 +31,13 @@ Public Class clsFlash : Inherits clsVital
             ' User placed unknown files in the flash folder?
             If Not IsValidBackup(sCurFile) Then Continue For
 
-            If Not gsLabel = "" Then
+            If gsLabel = "hidden" Then
+
+                sCMDLine = BuildCommand(sCurFile)
+
+                If Not ExecuteCommand(sCMDLine) Then Exit For
+
+            ElseIf Not gsLabel = "" Then
 
                 ' It's a partition backup file... possibly :) hopefully :)
                 iCurIndex = LocatePartition(saBuffer, gsLabel)
@@ -45,12 +51,14 @@ Public Class clsFlash : Inherits clsVital
 
                 End If
 
-            ElseIf Not gsLUN = "" Then
+            ElseIf Not gsLUN = "" _
+                AndAlso goSpeaker.gbAdvEnabled Then
 
                 ' I've flashed LUN4 with this code without any issues, 
-                ' but this is too dangerous, someone can destroy their phone
+                ' but this is too dangerous for users that don't understand what they'r doing.
+                ' Use -advanced parameter withing the command line to enable this code.
 
-                Continue For
+                'This code will work with hidden LUN backup as well, there's no need to add anything
 
                 gsLabel = "LUN Recovery"
                 gsStart = 0
@@ -73,8 +81,8 @@ Public Class clsFlash : Inherits clsVital
     Private Function LoadFlashList(ByRef saFileList() As String) As Boolean
 
         If Not Directory.Exists(gsDirName) Then
-            Console.WriteLine(goUILang.ID2Msg(37))
-            Console.WriteLine(goUILang.ID2Msg(17))
+            Console.WriteLine(goSpeaker.ID2Msg(37))
+            Console.WriteLine(goSpeaker.ID2Msg(17))
             Console.ReadKey(True)
             Return False
         End If
@@ -82,8 +90,8 @@ Public Class clsFlash : Inherits clsVital
         saFileList = Directory.GetFiles(gsDirName, "*.bin")
 
         If saFileList.Count = 0 Then
-            Console.WriteLine(goUILang.ID2Msg(38))
-            Console.WriteLine(goUILang.ID2Msg(17))
+            Console.WriteLine(goSpeaker.ID2Msg(38))
+            Console.WriteLine(goSpeaker.ID2Msg(17))
             Console.ReadKey(True)
             Return False
         End If
@@ -105,9 +113,9 @@ Public Class clsFlash : Inherits clsVital
 
         Next
 
-        Console.WriteLine(goUILang.ID2Msg(39) & vbCrLf)
+        Console.WriteLine(goSpeaker.ID2Msg(39) & vbCrLf)
         Console.WriteLine(sOutput.Substring(0, sOutput.Length - 2))
-        Console.WriteLine(goUILang.ID2Msg(40))
+        Console.WriteLine(goSpeaker.ID2Msg(40))
 
         If Console.ReadKey(True).Key = ConsoleKey.Y Then
             Console.Clear()
@@ -124,7 +132,7 @@ Public Class clsFlash : Inherits clsVital
         'fh_loader.exe --port=\\.\COM? --sendimage=LUN4_complete.bin --start_sector=0 --lun=4 --noprompt 
         ' --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs
 
-        Dim sCurLabel As String = DirWithSlash & sCurFile
+        Dim sCurLabel As String = getDirWSlash & sCurFile
 
         BuildCommand = "--port=\\.\" & gsCOMPort & _
                        " --sendimage=" & sCurLabel & _
@@ -132,79 +140,220 @@ Public Class clsFlash : Inherits clsVital
                        " --lun=" & gsLUN & _
                        " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
 
-        Console.WriteLine(goUILang.ID2Msg(29) & gsLabel & _
+        Console.WriteLine(goSpeaker.ID2Msg(29) & gsLabel & _
                           " | LUN: " & gsLUN & _
                           " | Start: " & gsStart & _
                           vbNewLine)
 
     End Function
 
-    ' Let's see what we're dealing with. Is it a LUN backup or a partition backup? 
+    ' Split those by underscore for any possible variation:
 
-    ' QFIL Helper will accept only files named according to the following rules:
-
-    ' lun0.bin - a LUN backup
-    ' lun0_complete.bin - a LUN backup
-
-    ' lun4_abl_a.bin - a partition
-    ' abl_a.bin - a partition
-
-    ' lun4_hidden_partition_b-000_s-0000 - not processing yet
+    ' lun3_hidden_s -2048.bin
+    ' lun4_hidden_partition_b-417181_s-1.bin
+    ' lun4_abl_a.bin
+    ' lun0_ftm.bin
+    ' lun4.bin
+    ' abl_a.bin
+    ' ftm.bin
 
     Private Function IsValidBackup(ByRef sCurFile As String) As Boolean
 
         ResetInfo()
         sCurFile = ExtractFileName(sCurFile)
 
-        With sCurFile
+        Dim saSplitByUnder() As String = sCurFile.Split("_")
 
-            If .StartsWith("lun") AndAlso _
-               .EndsWith("_complete.bin") AndAlso _
-               .Length = "lun0_complete.bin".Length Then
+        If saSplitByUnder.Count = 1 Then
 
-                gsLUN = .Substring("lun".Length, 1)
-                Return True
+            If sCurFile.StartsWith("lun") Then
 
-            ElseIf .StartsWith("lun") AndAlso _
-                   .EndsWith(".bin") AndAlso _
-                   .Length = "lun0.bin".Length Then
+                ' This is a LUN image
+                ' Example: lun4.bin
 
-                gsLUN = .Substring("lun".Length, 1)
-                Return True
-
-            ElseIf .StartsWith("lun") AndAlso _
-                   .EndsWith(".bin") AndAlso _
-                   .Contains("hidden") Then
-
-                ' no code yet
-                Return False
-
-            ElseIf .StartsWith("lun") AndAlso _
-                   .EndsWith(".bin") AndAlso Not _
-                   .Contains("hidden") Then
-
-                Dim iLPart As Byte = "lun0_".Length
-                Dim iRPart As Byte = ".bin".Length
-
-                gsLUN = .Substring("lun".Length, 1)
-                gsLabel = .Substring(iLPart, .Length - (iLPart + iRPart))
-                Return True
-
-            ElseIf .EndsWith(".bin") Then
-
-                Dim iRPart As Byte = ".bin".Length
-                gsLabel = .Substring(0, .Length - iRPart)
-                Return True
-
-            ElseIf .EndsWith(".img") Then
-
-                ' Reserved for TWRP flashing with QFIL
-                ' Not sure if can be done, need to test
-                Return False
+                Return ParseLUN(saSplitByUnder)
 
             End If
 
-        End With
+            ' This is a partition image
+            ' Example: [0] ftm.bin
+
+            Return ParseShortPart(saSplitByUnder)
+
+        End If
+
+
+        If saSplitByUnder(0).StartsWith("lun") Then
+
+            If saSplitByUnder(1).StartsWith("hidden") Then
+
+                If saSplitByUnder(2).StartsWith("partition") Then
+
+                    ' This is a hidden partition image
+                    ' Example: [0] lun4 [1] hidden [2] partition [3] b-417181 [4] s-1.bin
+
+                    Return ParseHiddenPart(saSplitByUnder)
+
+                End If
+
+                ' This is a hidden LUN image
+                ' Example: [0] lun3 [1] hidden [2] s-2048.bin
+
+                Return ParseHiddenLUN(saSplitByUnder)
+
+            ElseIf saSplitByUnder(1).StartsWith("complete") Then
+
+                ' This is a LUN image
+                ' Example: lun4_complete.bin
+
+                Return ParseLUN(saSplitByUnder)
+
+            End If
+
+            ' This is a partition image
+            ' Example: [0] lun0 [1] ftm.bin
+            ' Example: [0] lun4 [1] abl [2] a.bin
+
+            Return ParseFullPart(saSplitByUnder)
+
+        End If
+
+        ' This is a partition image
+        ' Example: [0] ALIGN [1] TO [2] 128K [3] 2
+        ' Example: [0] raw [1] resources [2] b
+
+        Return ParseShortPart(saSplitByUnder)
+
+    End Function
+
+    Private Function ParseHiddenPart(ByRef saSplitByUnder() As String) As Boolean
+
+        ' This is a hidden partition image
+        ' Example: [0] lun4 [1] hidden [2] partition [3] b-417181 [4] s-1.bin
+
+        If saSplitByUnder(0).Length <> 4 Then Return False
+
+        Dim saPBeg() As String = saSplitByUnder(3).Split("-")
+        Dim saPTot() As String = saSplitByUnder(4).Split("-")
+        Dim iTest As UInt32
+
+        If saPBeg.Count <> 2 OrElse _
+            saPTot.Count <> 2 Then Return False
+
+        gsLabel = "hidden"
+        gsStart = saPBeg(1)
+        gsSectors = saPTot(1).Split(".")(0)
+        gsLUN = saSplitByUnder(0).Substring(3, 1)
+
+        If Not UInt32.TryParse(gsLUN, iTest) AndAlso _
+           Not UInt32.TryParse(gsStart, iTest) AndAlso _
+           Not UInt32.TryParse(gsSectors, iTest) Then Return False
+
+        Return True
+
+    End Function
+
+    Private Function ParseHiddenLUN(ByRef saSplitByUnder() As String) As Boolean
+
+        ' This is a hidden LUN image
+        ' Example: [0] lun3 [1] hidden [2] s-2048.bin
+
+        If saSplitByUnder(0).Length <> 4 Then Return False
+
+        Dim saLTot() As String = saSplitByUnder(2).Split("-")
+        Dim iTest As UInt32
+
+        If saLTot.Count <> 2 Then Return False
+
+        gsSectors = saLTot(1).Split(".")(0)
+        gsLUN = saSplitByUnder(0).Substring(3, 1)
+
+        If Not UInt32.TryParse(gsLUN, iTest) AndAlso _
+           Not UInt32.TryParse(gsSectors, iTest) Then Return False
+
+        Return True
+
+    End Function
+
+    Private Function ParseLUN(ByRef saSplitByUnder() As String) As Boolean
+
+        ' This is a LUN image
+        '  Example: [0] lun4.bin
+
+        If saSplitByUnder(0).Length <> 8 Then Return False
+
+        Dim iTest As Byte
+        gsLUN = saSplitByUnder(0).Substring(3, 1)
+
+        If Not Byte.TryParse(gsLUN, iTest) Then Return False
+
+        Return True
+
+    End Function
+
+    Private Function ParseFullPart(ByRef saSplitByUnder()) As String
+
+        If saSplitByUnder(0).Length <> 4 Then Return False
+
+        ' This is a partition image
+        ' Example: [0] lun4 [1] abl [2] a.bin
+        ' Example: [0] lun0 [1] ftm.bin
+
+        ' Example: [0] lun5 [1] ALIGN [2] TO [3] 128K [4] 2
+        ' Example: [0] lun4 [1] raw [2] resources [3] b
+        ' Example: [0] lun4 [1] abl [2] a.bin
+        ' Example: [0] lun0 [1] ftm.bin
+
+        Dim iCnt As Byte
+        gsLUN = saSplitByUnder(0).Substring(3, 1)
+
+        If Not Byte.TryParse(gsLUN, iCnt) Then Return False
+
+        Try
+
+            For iCnt = 1 To saSplitByUnder.Count - 2
+                gsLabel &= saSplitByUnder(iCnt) & "_"
+            Next
+
+            gsLabel &= saSplitByUnder(iCnt).Split(".")(0)
+
+            Return True
+
+        Catch
+
+            Return False
+
+        End Try
+
+    End Function
+
+
+    Private Function ParseShortPart(ByRef saSplitByUnder() As String) As Boolean
+
+        ' This is a partition image
+        ' Example: [0] ALIGN [1] TO [2] 128K [3] 2
+        ' Example: [0] raw [1] resources [2] b
+        ' Example: [0] abl [1] a.bin
+        ' Example: [0] ftm.bin
+
+        Try
+
+            Dim iCnt As Byte
+
+            For iCnt = 0 To saSplitByUnder.Count - 2
+                gsLabel &= saSplitByUnder(iCnt) & "_"
+            Next
+
+            gsLabel &= saSplitByUnder(iCnt).Split(".")(0)
+
+            Return True
+
+        Catch
+
+            Return False
+
+        End Try
+
 
     End Function
 

@@ -113,9 +113,9 @@
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -154,16 +154,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\boot_partitons.txt" />
+    <EmbeddedResource Include="Resources\menu_en.txt" />
+    <EmbeddedResource Include="Resources\menu_ru.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\vital_partitions.txt" />
+    <EmbeddedResource Include="Resources\msg_en.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\english.txt" />
+    <EmbeddedResource Include="Resources\msg_ru.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\russian.txt" />
+    <EmbeddedResource Include="Resources\list_boot.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\list_vital.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <ProjectExtensions>
@@ -171,6 +175,11 @@
       <UserProperties VsiSettingsState="Initialized" VsiUseTimeUtc="UseGlobal" VsiDeltaBaseDate="11/07/2022 12:57:31" VsiUseGlobalBaseDate="True" VsiConfigurationBuildAction="True.True.True.True.UseGlobal.UseGlobal" VsiAutoInformationalVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoFileVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiEnabled="True" />
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>if exist "$(TargetPath).locked" del "$(TargetPath).locked"
+
+if exist "$(TargetPath)" if not exist "$(TargetPath).locked" move "$(TargetPath)" "$(TargetPath).locked"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

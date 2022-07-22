@@ -91,7 +91,7 @@ Public Class clsParts : Inherits clsInit
            Not UInt32.TryParse(gsStart, giStart) Or _
            Not UInt32.TryParse(gsSectors, giSectors) Then
 
-            Console.WriteLine(goUILang.ID2Msg(8) & sCurLine)
+            Console.WriteLine(goSpeaker.ID2Msg(26) & sCurLine)
             Console.ReadKey()
 
             Return False
@@ -107,7 +107,7 @@ Public Class clsParts : Inherits clsInit
         ' fh_loader.exe --port=\\.\COM? --convertprogram2read --sendimage=mpt.bin --start_sector=6 --lun=0 '
         ' --num_sectors=8192 --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs
 
-        Dim sCurLabel As String = DirWithSlash & "lun" & gsLUN & "_" & gsLabel & ".bin"
+        Dim sCurLabel As String = getDirWSlash & "lun" & gsLUN & "_" & gsLabel & ".bin"
 
         BuildCommand = "--port=\\.\" & gsCOMPort & _
                        " --convertprogram2read --sendimage=" & sCurLabel & _
@@ -116,7 +116,7 @@ Public Class clsParts : Inherits clsInit
                        " --num_sectors=" & gsSectors & _
                        " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
 
-        Console.WriteLine(goUILang.ID2Msg(10) & gsLabel & _
+        Console.WriteLine(goSpeaker.ID2Msg(36) & gsLabel & _
                           ".bin | LUN: " & gsLUN & _
                           " | Start: " & gsStart & _
                           " | Sectors: " & gsSectors & _
@@ -132,7 +132,8 @@ Public Class clsParts : Inherits clsInit
 
         oProcess.StartInfo.Arguments = sCMDLine
         oProcess.StartInfo.CreateNoWindow = False
-        oProcess.StartInfo.FileName = "fh_loader.exe"
+        'oProcess.StartInfo.FileName = "fh_loader.exe"
+        oProcess.StartInfo.FileName = gsFHLoader
         oProcess.StartInfo.UseShellExecute = False
         oProcess.StartInfo.RedirectStandardOutput = True
         oProcess.StartInfo.RedirectStandardError = True
@@ -153,14 +154,14 @@ Public Class clsParts : Inherits clsInit
             sBuffer.Contains("ERROR: Could not write to") OrElse _
             sBuffer.Contains("SAHARA mode!!") Then
             Console.Clear()
-            Console.WriteLine(goUILang.ID2Msg(11) & vbCrLf)
-            Console.WriteLine(goUILang.ID2Msg(12) & vbCrLf)
-            Console.WriteLine(goUILang.ID2Msg(13))
-            Console.WriteLine(goUILang.ID2Msg(14))
-            Console.WriteLine(goUILang.ID2Msg(15))
-            Console.WriteLine(goUILang.ID2Msg(16))
-            Console.WriteLine(vbCrLf & goUILang.ID2Msg(17))
-            Console.ReadKey(True)
+            Console.WriteLine(goSpeaker.ID2Msg(11) & vbCrLf)
+            Console.WriteLine(goSpeaker.ID2Msg(12))
+            Console.WriteLine(goSpeaker.ID2Msg(13))
+            Console.WriteLine(goSpeaker.ID2Msg(14))
+            Console.WriteLine(goSpeaker.ID2Msg(15))
+            Console.WriteLine(goSpeaker.ID2Msg(16) & vbCrLf)
+            'Console.WriteLine(vbCrLf & goSpeaker.ID2Msg(17))
+            'Console.ReadKey(True)
             gbFailed = True
         Else : Return True
         End If

@@ -44,7 +44,7 @@ Public Class clsLUNs : Inherits clsHParts
                         ParseXML(saBuffer(iIndex)) Then Continue For
 
                     gsLUN = iCnt.ToString
-                    gsSectors = Size.ToString
+                    gsSectors = getSize.ToString
 
                     'Case 3, 6 : SetHiddenLUN(iCnt)
 
@@ -97,7 +97,7 @@ Public Class clsLUNs : Inherits clsHParts
 
         Else
 
-            Console.WriteLine(goUILang.ID2Msg(8) & sBuffer)
+            Console.WriteLine(goSpeaker.ID2Msg(26) & sBuffer)
             Console.ReadKey()
             Return False
 
@@ -115,7 +115,7 @@ Public Class clsLUNs : Inherits clsHParts
         Function(x As String) (x.Contains("""last_parti"" physical_partition_number=""" & iCnt)))
 
         If LocateLUN = -1 Then
-            Console.WriteLine(goUILang.ID2Msg(9) & iCnt)
+            Console.WriteLine(goSpeaker.ID2Msg(35) & iCnt)
             Console.ReadKey(True)
         End If
 
@@ -127,7 +127,7 @@ Public Class clsLUNs : Inherits clsHParts
         Function(x As String) (x.Contains("""userdata"" physical_partition_number=""0")))
 
         If LocateUserdata = -1 Then
-            Console.WriteLine(goUILang.ID2Msg(9) & "0")
+            Console.WriteLine(goSpeaker.ID2Msg(35) & "0")
             Console.ReadKey(True)
         End If
 
@@ -138,7 +138,7 @@ Public Class clsLUNs : Inherits clsHParts
         ' fh_loader.exe --port=\\.\COM --convertprogram2read --sendimage=lun1_complete.bin --start_sector=0 
         '--lun=1 --num_sectors=2048 --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs
 
-        Dim sCurLabel As String = DirWithSlash & "lun" & gsLUN & "_complete.bin"
+        Dim sCurLabel As String = getDirWSlash & "lun" & gsLUN & "_complete.bin"
 
         BuildCommand = "--port=\\.\" & gsCOMPort & _
                        " --convertprogram2read --sendimage=" & sCurLabel & _
@@ -147,7 +147,7 @@ Public Class clsLUNs : Inherits clsHParts
                        " --num_sectors=" & gsSectors & _
                        " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
 
-        Console.WriteLine(goUILang.ID2Msg(24) & gsLUN & "_complete.bin" & _
+        Console.WriteLine(goSpeaker.ID2Msg(24) & gsLUN & "_complete.bin" & _
                           " | Sectors: " & gsSectors & vbNewLine)
 
     End Function

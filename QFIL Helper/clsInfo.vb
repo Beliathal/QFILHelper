@@ -15,13 +15,13 @@ Public Class clsInfo
     Private Const scHiddenLUN3 As String = "2048"
     Private Const scHiddenLUN6 As String = "1024"
 
-    Protected ReadOnly Property HiddenPart() As String
+    Protected ReadOnly Property getHPString() As String
         Get
             Return "_hidden_partition_b-" & gsStart & "_s-" & gsSectors
         End Get
     End Property
 
-    Protected ReadOnly Property HiddenLUN() As String
+    Protected ReadOnly Property getHLString() As String
         Get
             Return "_hidden" & "_s-" & gsSectors
         End Get
@@ -29,7 +29,7 @@ Public Class clsInfo
 
     ' Used for converting Hidden Partition Sectors to String
 
-    Protected WriteOnly Property Sectors() As UInt32
+    Protected WriteOnly Property setSectors() As UInt32
 
         Set(value As UInt32)
             gsSectors = value.ToString
@@ -37,7 +37,7 @@ Public Class clsInfo
 
     End Property
 
-    Protected WriteOnly Property Start() As UInt32
+    Protected WriteOnly Property setStart() As UInt32
 
         Set(value As UInt32)
             gsStart = value.ToString
@@ -45,7 +45,7 @@ Public Class clsInfo
 
     End Property
 
-    Protected WriteOnly Property LUN() As Byte
+    Protected WriteOnly Property setLUN() As Byte
 
         Set(value As Byte)
             gsLUN = value.ToString
@@ -53,7 +53,7 @@ Public Class clsInfo
 
     End Property
 
-    Protected ReadOnly Property Size() As UInt32
+    Protected ReadOnly Property getSize() As UInt32
 
         Get
             Return giStart + giSectors
@@ -82,6 +82,20 @@ Public Class clsInfo
             If TypeOf oPtr.GetValue(Me) Is Boolean Then oPtr.SetValue(Me, False)
 
         Next
+
+    End Sub
+
+    Protected Sub ResetInfoOld()
+
+        gsLabel = Nothing
+        gsLUN = Nothing
+        gsStart = Nothing
+        gsSectors = Nothing
+
+        giLUN = Byte.MinValue
+        giStart = UInt32.MinValue
+        giSectors = UInt32.MinValue
+        gbFailed = False
 
     End Sub
 
