@@ -118,22 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="boot_partitons" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\boot_partitons.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="english" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\english.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="fh_loader" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fh_loader.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="licence" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\licence.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="russian" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\russian.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="list_boot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\list_boot.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="vital_partitions" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\vital_partitions.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="list_vital" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\list_vital.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="menu_en" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\menu_en.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="menu_ru" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\menu_ru.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="msg_en" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\msg_en.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="msg_ru" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\msg_ru.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

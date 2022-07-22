@@ -61,47 +61,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to abl_a
-        '''abl_b
-        '''boot_a
-        '''boot_b
-        '''laf_a
-        '''laf_b
-        '''xbl_a
-        '''xbl_config_a
-        '''xbl_b
-        '''xbl_config_b.
-        '''</summary>
-        Friend ReadOnly Property boot_partitons() As String
-            Get
-                Return ResourceManager.GetString("boot_partitons", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to What would you like to do?
-        '''	1-Backup partitions
-        '''	2-Backup hidden partitions
-        '''	3-Backup LUNs
-        '''	4-Backup hidden LUNs (manual)
-        '''	Q-Quit
-        '''Invalid input, please try again...
-        '''Something went wrong! Unable to parse the line: 
-        '''Something went wrong! Unable to calculate size of LUN: 
-        '''Saving: 
-        '''Error: fh_loader is unable to communicate to the COM Port!
-        '''	Things to check:
-        '''	1. Have you connected your phone to the PC?
-        '''	2. Have you put your phone in the EDL mode?
-        '''	3. Have you run QFIL and loaded the partition manag [rest of string was truncated]&quot;;.
-        '''</summary>
-        Friend ReadOnly Property english() As String
-            Get
-                Return ResourceManager.GetString("english", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
         Friend ReadOnly Property fh_loader() As Byte()
@@ -134,25 +93,20 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Выберете задачу:
-        '''	1-Сохранить разделы
-        '''	2-Сохранить скрытые разделы
-        '''	3-Сохранить диски (LUN)
-        '''	4-Сохранить скрытые диски (вручную)
-        '''	Q-Выход
-        '''Неверный ввод, попробуйте еще раз...
-        '''Что-то пошло не так! Не могу выполнить парсинг этой строчки: 
-        '''Что-то пошло не так! Не могу вычислить размеры логического диска: 
-        '''Сохраняю: 
-        '''Ошибка: fh_loader не может связаться с COM-портом!
-        '''	Проверьте и убедитесь что:
-        '''	1. Ваш телефон подключен к компьютеру
-        '''	2. Телефон находится в режиме EDL
-        '''	3. Программа QFIL запущенна и [rest of string was truncated]&quot;;.
+        '''  Looks up a localized string similar to abl_a
+        '''abl_b
+        '''boot_a
+        '''boot_b
+        '''laf_a
+        '''laf_b
+        '''xbl_a
+        '''xbl_config_a
+        '''xbl_b
+        '''xbl_config_b.
         '''</summary>
-        Friend ReadOnly Property russian() As String
+        Friend ReadOnly Property list_boot() As String
             Get
-                Return ResourceManager.GetString("russian", resourceCulture)
+                Return ResourceManager.GetString("list_boot", resourceCulture)
             End Get
         End Property
         
@@ -163,9 +117,116 @@ Namespace My.Resources
         '''fsg
         '''fsc.
         '''</summary>
-        Friend ReadOnly Property vital_partitions() As String
+        Friend ReadOnly Property list_vital() As String
             Get
-                Return ResourceManager.GetString("vital_partitions", resourceCulture)
+                Return ResourceManager.GetString("list_vital", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to 	@-Backup partitions
+        '''	@-Backup LUNs
+        '''	@-Backup hidden partitions
+        '''	@-Backup hidden LUNs (manual)
+        '''	@-Backup: ABL, Boot, LAF, XBL
+        '''	@-Backup: FTM, Modemst, FSG, FSC
+        '''	@-Detect connected COM ports
+        '''	@-Flash files (from Flash folder)
+        '''	Q-Quit
+        '''	# 
+        '''	@-Backup partitions
+        '''	@-Backup LUNs
+        '''	@-Backup: ABL, Boot, LAF, XBL
+        '''	@-Backup: FTM, Modemst, FSG, FSC
+        '''	@-Detect connected COM ports
+        '''	@-Flash files (from Flash folder)
+        '''	Q-Quit.
+        '''</summary>
+        Friend ReadOnly Property menu_en() As String
+            Get
+                Return ResourceManager.GetString("menu_en", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to 	@-Сохранить разделы
+        '''	@-Сохранить диски (LUN)
+        '''	@-Сохранить скрытые разделы
+        '''	@-Сохранить скрытые диски (вручную)
+        '''	@-Сохранить разделы: ABL, Boot, LAX, XBL
+        '''	@-Сохранить разделы: FTM, Modemst, FSG, FSC
+        '''	@-Проверка подключенных портов
+        '''	@-Прошить файлы (из директории Flash)
+        '''	Q-Выход
+        '''	#
+        '''	@-Сохранить разделы
+        '''	@-Сохранить диски (LUN)
+        '''	@-Сохранить разделы: ABL, Boot, LAX, XBL
+        '''	@-Сохранить разделы: FTM, Modemst, FSG, FSC
+        '''	@-Проверка подключенных портов
+        '''	@-Прошить файлы (из директории Flash)
+        '''	Q-Выход.
+        '''</summary>
+        Friend ReadOnly Property menu_ru() As String
+            Get
+                Return ResourceManager.GetString("menu_ru", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to QFIL Helper v@
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''Error: fh_loader is unable to communicate to the COM Port!
+        '''	Things to check:
+        '''	1. Have you connected your phone to the PC?
+        '''	2. Have you put your phone in the EDL mode?
+        '''	3. Have you run QFIL and loaded the partition manager window?
+        '''	4. Have saved new COMx_PartitionsList.xml in the QFIL folder?
+        '''Press any key to return to the main menu
+        '''Error: Unable to locate fh_loader.exe
+        '''Error: Unable to locate COMx_PartitionsList.xml
+        '''Error: Unable to extract COM Port number from the [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property msg_en() As String
+            Get
+                Return ResourceManager.GetString("msg_en", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to QFIL Helper v@
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''
+        '''Ошибка: fh_loader не может связаться с COM-портом!
+        '''	Проверьте и убедитесь что:
+        '''	1. Ваш телефон подключен к компьютеру
+        '''	2. Телефон находится в режиме EDL
+        '''	3. Программа QFIL запущенна и окно менеджера разделов открыто
+        '''	4. Вы сохранили новый COMx_PartitionsList.xml в папку QFIL
+        '''Нажмите любую клавишу для возврата в главное меню
+        '''Ошибка: Не удалось найти fh_loader.exe
+        '''Ошибка: Не удалось найти COMx_PartitionsList.xml
+        '''Нажмите любую клавишу для продолжения...
+        '''Ошибка: Не уд [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property msg_ru() As String
+            Get
+                Return ResourceManager.GetString("msg_ru", resourceCulture)
             End Get
         End Property
     End Module
