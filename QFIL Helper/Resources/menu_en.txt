@@ -1,0 +1,17 @@
+﻿	@-Backup partitions
+	@-Backup LUNs
+	@-Backup hidden partitions
+	@-Backup hidden LUNs (manual)
+	@-Backup: ABL, Boot, LAF, XBL
+	@-Backup: FTM, Modemst, FSG, FSC
+	@-Detect connected COM ports
+	@-Flash files (from Flash folder)
+	Q-Quit
+	#
+	@-Backup partitions
+	@-Backup LUNs
+	@-Backup: ABL, Boot, LAF, XBL
+	@-Backup: FTM, Modemst, FSG, FSC
+	@-Detect connected COM ports
+	@-Flash files (from Flash folder)
+	Q-Quit
