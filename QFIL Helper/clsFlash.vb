@@ -46,7 +46,6 @@ Public Class clsFlash : Inherits clsVital
                     ParseXML(saBuffer(iCurIndex)) Then
 
                     sCMDLine = BuildCommand(sCurFile)
-
                     If Not ExecuteCommand(sCMDLine) Then Exit For
 
                 End If
@@ -280,7 +279,7 @@ Public Class clsFlash : Inherits clsVital
         ' This is a LUN image
         '  Example: [0] lun4.bin
 
-        If saSplitByUnder(0).Length <> 8 Then Return False
+        If saSplitByUnder(0).Length <> 4 Then Return False
 
         Dim iTest As Byte
         gsLUN = saSplitByUnder(0).Substring(3, 1)

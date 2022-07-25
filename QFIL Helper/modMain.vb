@@ -21,6 +21,8 @@ Module modMain
 
     Public goSpeaker As clsMsg ' CMD arguments, errors, warnings, language related settings
 
+    ' Possible args: -advanced -hidden -utf8 -ru -narrow -red
+
     Sub Main(args As String())
 
         Console.Title = My.Application.Info.Title

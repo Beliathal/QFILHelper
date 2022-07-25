@@ -10,7 +10,7 @@ Public Class clsInit : Inherits clsInfo
     Protected gsFHLoader As String
 
     Protected ResetBackupDate As Action = _
-        Sub() gsDirName = "Backup-" & Format(System.DateTime.Now, "yyyy-MM-dd-hhmmss")
+        Sub() gsDirName = "Backup-" & System.DateTime.Now.ToString("yyyy-MM-dd-HHmmss")
 
     Private CalcDaysDif As Func(Of UInt16) = _
         Function() Now.DayOfYear - File.GetLastWriteTime(gsFileName).DayOfYear

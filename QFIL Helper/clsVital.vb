@@ -57,18 +57,55 @@ Public Class clsVital : Inherits clsHLUNs
 
     End Sub
 
-    Protected Function LocatePartition( _
-                              ByRef sBuffer() As String, _
-                              ByVal sPName As String) As Integer
+    Protected Overloads Function LocatePartition( _
+                                            ByRef sBuffer() As String, _
+                                            ByRef sPName As String) As Integer
 
-        LocatePartition = Array.FindIndex(sBuffer, _
-        Function(x As String) (x.Contains(sPName)))
+        ' Caused an awefull bug where AOP_a would get overwritten by OP_a. 
+        ' This is what happens when you try to code while sleepy and tired :((
+
+        'LocatePartition = Array.FindIndex(sBuffer, _
+        'Function(x As String) (x.Contains(sPName)))
+
+        LocatePartition = -1
+
+        For iCnt As UInt16 = 0 To sBuffer.Count - 1
+
+            If sBuffer(iCnt).ToLower.IndexOf("partition label=""" & sPName.ToLower & """") > -1 Then
+                LocatePartition = iCnt
+                Exit For
+            End If
+
+        Next
 
         If LocatePartition = -1 Then
             Console.WriteLine(goSpeaker.ID2Msg(28) & sPName)
             Console.WriteLine(goSpeaker.ID2Msg(21))
             Console.ReadKey(True)
         End If
+
+    End Function
+
+    Protected Overloads Function LocatePartition( _
+                                             ByRef sBuffer() As String, _
+                                             ByRef sPName As String, _
+                                             ByRef sLNum As String) As Integer
+
+        'LocatePartition = Array.FindIndex(sBuffer, _
+        'Function(x As String) (x.Contains(sPName)))
+
+        For iCnt As UInt16 = 0 To sBuffer.Count
+
+            LocatePartition = sBuffer(iCnt).IndexOf(sPName)
+
+            If LocatePartition > -1 AndAlso _
+                sBuffer(iCnt).IndexOf(sLNum) > -1 Then Exit Function
+
+        Next
+
+        Console.WriteLine(goSpeaker.ID2Msg(28) & sPName)
+        Console.WriteLine(goSpeaker.ID2Msg(21))
+        Console.ReadKey(True)
 
     End Function
 
