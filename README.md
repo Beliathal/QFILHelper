@@ -94,7 +94,7 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 	For example:
 		
 	lun4_abl_a.bin - will be flashed into LUN4, Slot A
-	abl_a.bin - will be also flashed into LUN4, Slot A.
+	abl_a.bin - will also be flashed into LUN4, Slot A.
 	lun4.bin - will flash entire LUN4
 	
 ⚑ Starting with v1.0.0.500 the option to flash entire LUNs is disabled by default. The program would flash only partition images. To enable flashing of entire LUN images, use this command line argument: <b>-advanced</b>
