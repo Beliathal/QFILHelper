@@ -24,7 +24,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <li>	Some partitions, like DDR, CDT  (LUN3), DevInfo, Limits (LUN4) are hidden.</li>
 <li>	QFIL Partition manager won't display them nor export to PartitionsList.xml.</li>
 <li>	QFIL Helper will attempt to locate and save those partitions.</li>
-<li>  Enter the following command line argument to enable this option: -hidden</li>
+<li>  Enter the following command line argument to enable this option: <b>-hidden</b></li>
 </ul>
 
 ◆ Backup hidden LUNs
@@ -33,7 +33,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <li>	There's no possible way for me to calculate the size of these LUNs properly for every model of v50/G8.</li>
 <li>  QFIL Helper will ask the user to enter LUN number (3,6) and its size in sectors.</li>
 <li>  Use this mode only if you're absolutely sure you know what you doing.</li>
-<li>  Enter the following command line argument to enable this option: -hidden</li>
+<li>  Enter the following command line argument to enable this option: <b>-hidden</b></li>
 </ul>
 
 ◆ Backup: ABL, Boot, LAF, XBL
@@ -57,6 +57,14 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <li>	Restore your partitions backup.</li>
 <li>	Restore your LUN backup. </li>
 <li>	Flash 3rd party images like Engineering ABL.</li>
+<li>	Use command line argument to enable flashing of entire LUN images: -advanced </li>
+</ul>
+
+◆ Command line
+<ul>
+<li>	Enable backup of hidden LUNs and partitions: -hidden</li>
+<li>	Enabled advanced options, including flashing on netire LUN images: -advance </li>
+<li>	Remove spaces between menu entries: -narrow </li>
 </ul>
 
 <hr>
