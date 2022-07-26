@@ -8,7 +8,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 ◆ Backup Partitions
 <ul>
-<li>	Performs an automated backup of all aviable partitions. </li>
+<li>	Performs an automated backup of all available partitions. </li>
 <li>	COM?_PartitionsList.xml must be up-to-date. </li>
 <li>	Userdata will be skipped due to its size. </li>
 </ul>
@@ -24,7 +24,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <li>	Some partitions, like DDR, CDT  (LUN3), DevInfo, Limits (LUN4) are hidden.</li>
 <li>	QFIL Partition manager won't display them nor export to PartitionsList.xml.</li>
 <li>	QFIL Helper will attempt to locate and save those partitions.</li>
-<li>  Enter the following command line argument to enable this option: "-hidden"</li>
+<li>  Enter the following command line argument to enable this option: -hidden</li>
 </ul>
 
 ◆ Backup hidden LUNs
@@ -33,7 +33,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <li>	There's no possible way for me to calculate the size of these LUNs properly for every model of v50/G8.</li>
 <li>  QFIL Helper will ask the user to enter LUN number (3,6) and its size in sectors.</li>
 <li>  Use this mode only if you're absolutely sure you know what you doing.</li>
-<li>  Enter the following command line argument to enable this option: "-hidden"</li>
+<li>  Enter the following command line argument to enable this option: -hidden</li>
 </ul>
 
 ◆ Backup: ABL, Boot, LAF, XBL
