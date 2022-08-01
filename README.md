@@ -118,6 +118,6 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 <li>Connect your phone to the PC in EDL mode</li>
 <li>Launch QFIL and open Partition Manager</li>
 <li>Click on "Save Partition File"</li>
-<li>Keep QFIL running and Partition Manager open</li>
+<li>Leave QFIL running with Partition Manager open</li>
 <li>Run QFIL helper</li>
 </ul>
