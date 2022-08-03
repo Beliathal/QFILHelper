@@ -87,7 +87,7 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 
 	C:\Users\Your User Name\AppData\Roaming\Qualcomm\QFIL\
 
-⚑ When flashing firmware, the files must be placed in Flash subfolder and named in compliance with the following patterns:</li>
+⚑ When flashing firmware, the files must be placed in the "Flash" subfolder and named in compliance with any of the following formats:</li>
 			
 	lun#_partition_$.bin | parition_$.bin | partition.bin | lun#.bin | lun#_complete.bin
 		
