@@ -21,19 +21,22 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 ◆ Backup hidden partitions
 <ul>
-<li>	Some partitions, like DDR, CDT  (LUN3), DevInfo, Limits (LUN4) are hidden.</li>
+<li>	Hidden partitions for v50/v50s in LUN3: mdmddr, ddr, cdt.</li>
+<li>	Hidden partitions for v50/v50s in LUN4: devinfo, limits.</li>
+<li>	Hidden partitions for v50/v50s in LUN5: mdm1m9kefsc.</li>
+<li>	Hidden partitions for v50/v50s in LUN6: frp.</li>
 <li>	QFIL Partition manager won't display them nor export to PartitionsList.xml.</li>
 <li>	QFIL Helper will attempt to locate and save those partitions.</li>
-<li>  Enter the following command line argument to enable this option: <b>-hidden</b></li>
+<li>  	Enter the following command line argument to enable this option: <b>-hidden</b></li>
 </ul>
 
 ◆ Backup hidden LUNs
 <ul>
-<li>	LUNs 3 and 6 are hidden and won't show-up in QFIL Partiton Manager.</li>
-<li>	There's no possible way for me to calculate the size of these LUNs properly for every model of v50/G8.</li>
-<li>  QFIL Helper will ask the user to enter LUN number (3,6) and its size in sectors.</li>
-<li>  Use this mode only if you're absolutely sure you know what you doing.</li>
-<li>  Enter the following command line argument to enable this option: <b>-hidden</b></li>
+<li>	LUNs 3/6 are hidden and won't show-up in QFIL Partiton Manager.</li>
+<li>	The size of those LUNs for v50(s) is 2048/1024 sectors, but may differ for other phones.</li>
+<li>  	QFIL Helper will ask the user to enter LUN number (3,6) and its size in sectors.</li>
+<li>  	Use this mode only if you're absolutely sure you know what you doing.</li>
+<li>  	Enter the following command line argument to enable this option: <b>-hidden</b></li>
 </ul>
 
 ◆ Backup: ABL, Boot, LAF, XBL
