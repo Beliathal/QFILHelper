@@ -126,4 +126,4 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 </ul>
 
 <hr>
-<i>Thank you <b>FreeMaan</b>, <b>marahuan</b> from 4pda.to for your help in testing this app.</i>
+<i>Thank you <b>FreeMaan</b>(4pda.to), <b>marahuan</b>(4pda.to), for your help in testing this app.</i>
