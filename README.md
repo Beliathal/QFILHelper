@@ -6,47 +6,16 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 <b>Features:</b>
 
-◆ Backup Partitions
-<ul>
-<li>	Performs an automated backup of all available partitions. </li>
-<li>	COM?_PartitionsList.xml must be up-to-date. </li>
-<li>	Userdata will be skipped due to its size. </li>
-</ul>
-
 ◆ Backup LUNs
 <ul>
 <li>	Performs an automated backup of LUNs 0-1-2-4-5.</li>
 <li>	LUN0 backup will exclude Userdata due to its size.</li>
 </ul>
 
-◆ Backup hidden partitions
+◆ Backup Partitions
 <ul>
-<li>	Hidden partitions for v50/v50s in LUN3: mdmddr, ddr, cdt.</li>
-<li>	Hidden partitions for v50/v50s in LUN4: devinfo, limits.</li>
-<li>	Hidden partitions for v50/v50s in LUN5: mdm1m9kefsc.</li>
-<li>	Hidden partitions for v50/v50s in LUN6: frp.</li>
-<li>	QFIL Partition manager won't display them nor export to PartitionsList.xml.</li>
-<li>	QFIL Helper will attempt to locate and save those partitions.</li>
-<li>  	Enter the following command line argument to enable this option: <b>-hidden</b></li>
-</ul>
-
-◆ Backup hidden LUNs
-<ul>
-<li>	LUNs 3/6 are hidden and won't show-up in QFIL Partiton Manager.</li>
-<li>	The size of those LUNs for v50(s) is 2048/1024 sectors, but may differ for other phones.</li>
-<li>  	QFIL Helper will ask the user to enter LUN number (3,6) and its size in sectors.</li>
-<li>  	Use this mode only if you're absolutely sure you know what you doing.</li>
-<li>  	Enter the following command line argument to enable this option: <b>-hidden</b></li>
-</ul>
-
-◆ Backup: ABL, Boot, LAF, XBL
-<ul>
-<li>	Quick backup of all boot related partitions.</li>
-</ul>
-
-◆ Backup: FTM, Modemst, FSG, FSC
-<ul>
-<li>	Quick backup of vital partitons.</li>
+<li>	Performs an automated backup of all available partitions. </li>
+<li>	Userdata will be skipped due to its size. </li>
 </ul>
 
 ◆ Detect connected COM ports
@@ -65,18 +34,25 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 ◆ Command line
 <ul>
-<li>	Enable backup of hidden LUNs and partitions: -hidden</li>
-<li>	Enabled advanced options, including flashing on netire LUN images: -advance </li>
-<li>	Remove spaces between menu entries: -narrow </li>
+<li>	Enables advanced options: -advanced </li>
+<li>	Enables NTFS compression: -NTFS </li>
+</ul>
+
+◆ GPT Edition Update (beta testing)
+<ul>
+<li>	PartitionsList.xml is no longer needed </li>
+<li>	LUN and partition info is pulled directly from the GPT headers </li>
+<li>	The app now has access to all the info about hidden partitions and LUNs </li>
+<li>	Backward compatibility with backaups created with previous (except for hidden partitions/LUNs) </li>
+<li>	Added optional NTFS compression: - NTFS </li>
+<li>	Added userdata backup (with compression enabled, takes atleas 40 mis on a "good" hardware) </li>
+<li>	Added option to erase partitions (not fully tested) </li>
+<li>	Added option to manualy specify what paritions/LUNs to backup </li>
 </ul>
 
 <hr>
 
 <b>Things to remember:</b>
-
-⚑ It's recommended, but not mandatory, to place QFIL Helper in the same directory where QFIL was installed.
-
-	Usualy: C:\Program Files (x86)\Qualcomm\QPST\bin\
 
 ⚑ Every time you make a backup with QFIL Helper, the files will be saved in: Backup-Year-Month-Day-Hour-Minute-Seconds
 
@@ -85,11 +61,6 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 	
 	Backup-2022-07-20-18-14-44
 	
-⚑ COM?_PartitionsList.xml contains the layout of all partitions in your device and is needed for QFIL Helper to function properly. 
-By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in this folder: 
-
-	C:\Users\Your User Name\AppData\Roaming\Qualcomm\QFIL\
-
 ⚑ When flashing firmware, the files must be placed in the "Flash" subfolder and named in compliance with any of the following formats:</li>
 			
 	lun#_partition_$.bin | parition_$.bin | partition.bin | lun#.bin | lun#_complete.bin
@@ -100,10 +71,6 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 	abl_a.bin - will also be flashed into LUN4, Slot A.
 	lun4.bin - will flash entire LUN4
 	
-⚑ Starting with v1.0.0.500 the option to flash entire LUNs is disabled by default. The program would flash only partition images. To enable flashing of entire LUN images, use this command line argument: <b>-advanced</b>
-
-⚑ Starting with v1.0.0.500 the options to backup hidden LUNs and hidden partitons are disabled by default. To enable, use this command line argument: <b>-hidden</b>
-	
 <hr>
 
 <i>v1.0.0.61 was tested sucefully with:</i>
@@ -113,6 +80,10 @@ By default QFIL Helper will attempt to look for COM?_PartitionsList.xml file in 
 <i>Update: 19-07-2022, v1.0.0.377: Tested sucefully with:</i>
 
 	Android 10, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
+	
+<i>Update: 21-02-2023, v1.0.1.14b: Tested sucefully with:</i>
+
+	Android 10/11/12, LG V50/G8S/G8X, Qualcomm USB Driver v1.00.57, QPST v2.7.496. 	
 	
 <hr>
 
