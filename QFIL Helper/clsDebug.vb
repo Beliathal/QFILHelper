@@ -141,8 +141,6 @@ Public Class clsDebug : Inherits clsErase
 
     End Function
 
-
-
     Private Function BinarySearch2( _
                                        ByRef saFileList() As String, _
                                        ByRef sFind As String) As Boolean
@@ -258,53 +256,7 @@ Public Class clsDebug : Inherits clsErase
 
     Public Sub DebugerTester()
 
-        'SelectiveLUNBackup({"lun8", "lun6_op", "system_a", "lun4", "lunnnn"})
-        'BackupSelPartitions({"ftm", "modemst1", "modemst2", "fsg", "fsc", "poop"})
-
-
-        'Dim sTemp As String
-        'sTemp = getProgramFiles()
-        'sTemp = getAppRoaming()
-        'sTemp = getTempFolder()
-        'DebugFindPartiton("")
         Stop
-
-        'sTemp = String.Concat(Enumerable.Repeat("ab", 2))
-        'sTemp = "ab" * 2
-
-        'Dim oKey As New System.ConsoleKey
-        'Dim okey2 As ConsoleKeyInfo '= Console.ReadKey(False)
-
-        'oKey = Console.Read
-        'key = Console.ReadKey(False)
-        'oKey = Console.ReadKey(True).Key
-        'oKey = key.Key
-        'Stop
-
-        ' If Console.KeyAvailable Then
-        'okey2 = Console.ReadKey(intercept:=False)
-        ' Console.Read()
-        ' oKey = okey2.Key
-        ' process the key press here
-        'End If
-
-        '        Select Case True
-
-        'Case oKey = ConsoleKey.Escape : Exit Do
-        'Case oKey = ConsoleKey.Enter : Exit Do
-
-        '    Case oKey = ConsoleKey.OemMinus : sInput &= "_"
-        '   Case oKey = ConsoleKey.OemComma : sInput &= ","
-
-        '    Case oKey >= ConsoleKey.A And oKey <= ConsoleKey.Z : sInput &= Chr(oKey)
-        '   Case oKey >= ConsoleKey.D0 And oKey <= ConsoleKey.D9 : sInput &= Chr(oKey)
-        '  Case oKey >= ConsoleKey.NumPad0 And oKey <= ConsoleKey.NumPad9 : sInput &= Chr(oKey)
-        '
-        '   Case oKey = ConsoleKey.Backspace : sInput.Remove(sInput.Length - 2, 1)
-
-        'Case Else : Stop
-
-        'End Select
 
     End Sub
 
