@@ -61,6 +61,18 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
+        '''&lt;data&gt;
+        '''  &lt;erase physical_partition_number=&quot;#&quot; start_sector=&quot;@&quot; num_partition_sectors=&quot;$&quot; SECTOR_SIZE_IN_BYTES=&quot;4096&quot; /&gt;
+        '''&lt;/data&gt;.
+        '''</summary>
+        Friend ReadOnly Property erase_xml() As String
+            Get
+                Return ResourceManager.GetString("erase_xml", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
         Friend ReadOnly Property fh_loader() As Byte()
@@ -93,7 +105,13 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to abl_a
+        '''  Looks up a localized string similar to ftm
+        '''modemst1
+        '''modemst2
+        '''fsg
+        '''fsc
+        '''#
+        '''abl_a
         '''abl_b
         '''boot_a
         '''boot_b
@@ -102,20 +120,37 @@ Namespace My.Resources
         '''xbl_a
         '''xbl_config_a
         '''xbl_b
-        '''xbl_config_b.
-        '''</summary>
-        Friend ReadOnly Property list_boot() As String
-            Get
-                Return ResourceManager.GetString("list_boot", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to ftm
-        '''modemst1
-        '''modemst2
-        '''fsg
-        '''fsc.
+        '''xbl_config_b
+        '''#
+        '''system_a
+        '''product_a
+        '''vendor_a
+        '''OP_a
+        '''modem_a
+        '''# 
+        '''system_b
+        '''product_b
+        '''vendor_b
+        '''OP_b
+        '''modem_b
+        '''#
+        '''ftm
+        '''modem_a
+        '''modem_b
+        '''sid_a
+        '''sid_b
+        '''OP_a
+        '''OP_b
+        '''#
+        '''lun1
+        '''lun2
+        '''lun3
+        '''lun5
+        '''lun6
+        '''#
+        '''lun0
+        '''#
+        '''lun4.
         '''</summary>
         Friend ReadOnly Property list_vital() As String
             Get
@@ -124,23 +159,27 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to 	@-Backup partitions
-        '''	@-Backup LUNs
-        '''	@-Backup hidden partitions
-        '''	@-Backup hidden LUNs (manual)
-        '''	@-Backup: ABL, Boot, LAF, XBL
-        '''	@-Backup: FTM, Modemst, FSG, FSC
+        '''  Looks up a localized string similar to 	@-Full backup (LUN mode)
+        '''	@-Full backup (partitions)
+        '''	@-Quick backup (LUNs)
+        '''	@-Quick backup (Partitions)
+        '''	@-Userdata backup
+        '''	@-Selective erase
         '''	@-Detect connected COM ports
         '''	@-Flash files (from Flash folder)
         '''	Q-Quit
-        '''	# 
-        '''	@-Backup partitions
-        '''	@-Backup LUNs
-        '''	@-Backup: ABL, Boot, LAF, XBL
-        '''	@-Backup: FTM, Modemst, FSG, FSC
+        '''	#
+        '''	@-Full backup (LUN mode)
+        '''	@-Full backup (partitions)
+        '''	@-Userdata backup
         '''	@-Detect connected COM ports
         '''	@-Flash files (from Flash folder)
-        '''	Q-Quit.
+        '''	Q-Quit
+        '''	#
+        '''	@-Backup: ABL, Boot, LAF, XBL
+        '''	@-Backup: FTM, Modemst, FSG, FSC
+        '''	@-Backup: System, Product, Vendor, OP, Modem [A]
+        '''	@-Backu [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property menu_en() As String
             Get
@@ -149,23 +188,26 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to 	@-Сохранить разделы
-        '''	@-Сохранить диски (LUN)
-        '''	@-Сохранить скрытые разделы
-        '''	@-Сохранить скрытые диски (вручную)
-        '''	@-Сохранить разделы: ABL, Boot, LAX, XBL
-        '''	@-Сохранить разделы: FTM, Modemst, FSG, FSC
+        '''  Looks up a localized string similar to 	@-Полный бэкап (режим LUN)
+        '''	@-Полный бэкап (разделы)
+        '''	@-Быстрый бэкап (LUN-ны)
+        '''	@-Быстрый бэкап (разделы)
+        '''	@-Сохранить userdata
+        '''	@-Выборочное удаление
         '''	@-Проверка подключенных портов
         '''	@-Прошить файлы (из директории Flash)
         '''	Q-Выход
         '''	#
-        '''	@-Сохранить разделы
-        '''	@-Сохранить диски (LUN)
-        '''	@-Сохранить разделы: ABL, Boot, LAX, XBL
-        '''	@-Сохранить разделы: FTM, Modemst, FSG, FSC
+        '''	@-Полный бэкап (режим LUN)
+        '''	@-Полный бэкап (разделы)
+        '''	@-Сохранить userdata
         '''	@-Проверка подключенных портов
         '''	@-Прошить файлы (из директории Flash)
-        '''	Q-Выход.
+        '''	Q-Выход
+        '''	#
+        '''	@-Сохранить: ABL, Boot, LAF, XBL
+        '''	@-Сохранить: FTM, Modemst, FSG, FSC
+        '''	@-Сохранить: System, Produc [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property menu_ru() As String
             Get
@@ -174,26 +216,17 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to QFIL Helper v@
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''Error: fh_loader is unable to communicate to the COM Port!
-        '''	Things to check:
-        '''	1. Have you connected your phone to the PC?
-        '''	2. Have you put your phone in the EDL mode?
-        '''	3. Have you run QFIL and loaded the partition manager window?
-        '''	4. Have saved new COMx_PartitionsList.xml in the QFIL folder?
-        '''Press any key to return to the main menu
-        '''Error: Unable to locate fh_loader.exe
-        '''Error: Unable to locate COMx_PartitionsList.xml
-        '''Error: Unable to extract COM Port number from the [rest of string was truncated]&quot;;.
+        '''  Looks up a localized string similar to Available
+        ''' QFIL Helper v@: GPT Editon | Advanced mode: On
+        ''' QFIL Helper v@: GPT Editon | Advanced mode: Off
+        '''Available
+        '''Error: Failed to apply NTFS compression to the backup folder! Aborting...
+        '''WARNING: You&apos;re about to backup the USERDATA partiton!
+        '''This process uses NTFS compression and requires a powerful PC and fast USB port!!!
+        '''Due to the size of userdata partiton this process can last very long time!!!
+        '''Are you absolutly sure you want to procceed?! (Y|N)
+        '''S-Skip | A-Abort
+        '''Error: fh_loader is unable  [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property msg_en() As String
             Get
@@ -202,27 +235,17 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to QFIL Helper v@
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''
-        '''Ошибка: fh_loader не может связаться с COM-портом!
-        '''	Проверьте и убедитесь что:
-        '''	1. Ваш телефон подключен к компьютеру
-        '''	2. Телефон находится в режиме EDL
-        '''	3. Программа QFIL запущенна и окно менеджера разделов открыто
-        '''	4. Вы сохранили новый COMx_PartitionsList.xml в папку QFIL
-        '''Нажмите любую клавишу для возврата в главное меню
-        '''Ошибка: Не удалось найти fh_loader.exe
-        '''Ошибка: Не удалось найти COMx_PartitionsList.xml
-        '''Нажмите любую клавишу для продолжения...
-        '''Ошибка: Не уд [rest of string was truncated]&quot;;.
+        '''  Looks up a localized string similar to Available
+        ''' QFIL Helper v@: GPT Editon | Расширенный режим: Вкл
+        ''' QFIL Helper v@: GPT Editon | Расширенный режим: Откл
+        '''Available
+        '''Ошибка: Не удалось применить NTFS сжатие к папке бэкапа! Отменяю сохранение...
+        '''ВНИМАНИЕ: Вы собираетесь сохранить раздел USERDATA!
+        '''Этот процесс использует NTFS сжатие и требует мощный ПК и быстрый USB порт!!!
+        '''Ввиду размера раздела userdata, процесс может занять длительное время!!!
+        '''Вы абсолютно уверенны что хотите продолжить?! (Y|N)
+        '''S-Пропустить | A-Отменить
+        '''Ошибка: fh_load [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property msg_ru() As String
             Get
