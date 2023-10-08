@@ -1,17 +1,34 @@
-﻿	@-Backup partitions
-	@-Backup LUNs
-	@-Backup hidden partitions
-	@-Backup hidden LUNs (manual)
-	@-Backup: ABL, Boot, LAF, XBL
-	@-Backup: FTM, Modemst, FSG, FSC
+﻿	@-Full backup (LUN mode)
+	@-Full backup (partitions)
+	@-Quick backup (LUNs)
+	@-Quick backup (partitions)
+	@-Userdata backup
+	@-Selective erase
 	@-Detect connected COM ports
 	@-Flash files (from Flash folder)
 	Q-Quit
 	#
-	@-Backup partitions
-	@-Backup LUNs
-	@-Backup: ABL, Boot, LAF, XBL
-	@-Backup: FTM, Modemst, FSG, FSC
+	@-Full backup (LUN mode)
+	@-Full backup (partitions)
+	@-Userdata backup
 	@-Detect connected COM ports
 	@-Flash files (from Flash folder)
 	Q-Quit
+	#
+	@-Backup: ABL, Boot, LAF, XBL
+	@-Backup: FTM, Modemst, FSG, FSC
+	@-Backup: System, Product, Vendor, OP, Modem [A]
+	@-Backup: System, Product, Vendor, OP, Modem [B]
+	@-Dump GPT Headers
+	@-Manual input
+	Q-Main menu
+	#
+	@-Backup: LUN 1-2-3-5-6
+	@-Backup: LUN 0
+	@-Backup: LUN 4
+	@-Manual input
+	Q-Main menu
+	#
+	@-Erase FTM, Modem, Sid, OP (pre-crossflash)
+	@-Manual input
+	Q-Main menu
