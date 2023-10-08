@@ -1,104 +1,194 @@
 ﻿Imports System.IO
 Imports Microsoft.VisualBasic
+Imports System.Text.RegularExpressions
 
 ' Purpouse: Backup LUNs
 
-Public Class clsLUNs : Inherits clsHParts
+Public Class clsLUNs : Inherits clsParts
+
+    Public Enum OPCode As Byte
+        FTM = 0
+        ABL = 1
+        SYSA = 2
+        SYSB = 3
+        SID = 4
+        LUN16 = 5
+        LUN0 = 6
+        LUN4 = 7
+    End Enum
 
     Public Sub BackupLUNs()
 
-        If Not ValidateFiles() Then Exit Sub
-
-        Dim saBuffer() As String
+        Dim isDebug As Boolean = False
         Dim sCMDLine As String
-        Dim iIndex As Integer
 
-        ResetInfo()
-        CreateBackupFolder()
+        If Not ValidateCQF(isDebug) Then Exit Sub
 
-        saBuffer = File.ReadAllLines(gsFileName)
-        gsLabel = "LUN Backup"
+        Dim obPInfo As stPInfo
+        Dim isExec As Boolean ' Did we execute even 1 command?
 
-        ' Skipping LUN 0 becasue it has userdata at the end
-        ' Skipping LUN 3 because it's hidden
-        ' If iIndex (same as iIndex = -1, implicit convertion of neg num to boolean = true)
+        ResetLookUp()
+        CreateBackupFolder(isDebug)
 
-        For iCnt As Byte = 0 To 5
+        If Not NTFSCompression(goSpeaker.gbDoCompress) Then GoTo EXT
+        If Not ReadGPTHeaders(True, False, isDebug) Then GoTo EXT
 
-            Select Case iCnt
+        For iCnt As Byte = 0 To galoLookUp.Count - 1
 
-                Case 0
+            obPInfo = Nothing
+            obPInfo.iStart = 0
+            obPInfo.sLabel = "complete"
+            obPInfo.iLUN = iCnt
 
-                    iIndex = LocateUserdata(saBuffer)
+            If Not CalcBounds(obPInfo) Then Exit For
 
-                    If iIndex = -1 OrElse Not _
-                        ParseXML(saBuffer(iIndex)) Then Continue For
+            sCMDLine = BuildCommand(obPInfo, False)
 
-                    gsLUN = "0" : gsSectors = giStart
-
-                Case 1, 2, 4, 5
-
-                    iIndex = LocateLUN(saBuffer, iCnt)
-
-                    If iIndex = -1 OrElse Not _
-                        ParseXML(saBuffer(iIndex)) Then Continue For
-
-                    gsLUN = iCnt.ToString
-                    gsSectors = getSize.ToString
-
-                    'Case 3, 6 : SetHiddenLUN(iCnt)
-
-            End Select
-
-            sCMDLine = BuildCommand()
-
+            If isDebug Then Continue For
             If Not ExecuteCommand(sCMDLine) Then Exit For
+
+            isExec = True
 
         Next
 
-        saBuffer = Nothing
-
+EXT:
         CleanUpBackupFolder()
-        ProcessCompletedMsg()
+        ProcessCompletedMsg(isExec Or isDebug)
+
+        obPInfo = Nothing
 
     End Sub
 
-    Private Overloads Function ParseXML(ByRef sBuffer As String) As Boolean
+    ' lun - matches the characters lun literally (case sensitive)
+    ' \d  - matches a digit (equivalent to [0-9])
+    ' {1} - matches the previous token exactly one time (limits to 1 digit)
+    '$    - specifies position at the end of a line (limits sting length to 4 in below case)
 
-        Dim iNumIndex As UInt16
-        Dim iBegIndex As UInt16
+    Public Function BackupSelLUNs(ByRef saLookUp() As String) As Boolean
 
-        iBegIndex = sBuffer.IndexOf("start_sector")
-        iNumIndex = sBuffer.IndexOf("num_partition")
+        Dim isDebug As Boolean = False
+        Dim sCMDLine As String
 
-        ResetInfo()
+        If saLookUp.Count = 0 Then Return False
+        If Not ValidateCQF(isDebug) Then Return False
 
-        If iBegIndex > -1 AndAlso iNumIndex > -1 Then
+        Dim obPInfo As stPInfo
+        Dim isExec As Boolean ' Did we execute even 1 command?
 
-            iBegIndex += "start_sector=""".Length
-            iNumIndex += "num_partition_sectors=""".Length
+        ResetLookUp()
+        CreateBackupFolder(isDebug)
 
-            Do
+        If Not NTFSCompression(goSpeaker.gbDoCompress) Then GoTo EXT
+        If Not ReadGPTHeaders(True, False, isDebug) Then GoTo EXT
 
-                gsStart &= sBuffer(iBegIndex).ToString
-                iBegIndex += 1
+        For iCnt As Byte = 0 To saLookUp.Count - 1
 
-            Loop While IsNumeric(sBuffer(iBegIndex))
+            If Not Regex.IsMatch(saLookUp(iCnt).ToLower, "lun\d{1}$") Then Continue For
 
-            Do
+            obPInfo = Nothing
+            obPInfo.iLUN = 0
+            obPInfo.iStart = 0
+            obPInfo.sLabel = "complete"
 
-                gsSectors &= sBuffer(iNumIndex).ToString
-                iNumIndex += 1
+            sCMDLine = saLookUp(iCnt).Substring(3, 1)
 
-            Loop While IsNumeric(sBuffer(iNumIndex))
+            If Not ValidateLUNNumber(sCMDLine, obPInfo.iLUN) Then _
+                If geFailed = ErrorType.ER_ABORT Then _
+                GoTo EXT _
+                Else Continue For
 
-            giStart = UInt32.Parse(gsStart)
-            giSectors = UInt32.Parse(gsSectors)
+            If Not CalcBounds(obPInfo) Then Exit For
 
-        Else
+            sCMDLine = BuildCommand(obPInfo, False)
 
-            Console.WriteLine(goSpeaker.ID2Msg(26) & sBuffer)
-            Console.ReadKey()
+            If isDebug Then Continue For
+            If Not ExecuteCommand(sCMDLine) Then Exit For
+
+            ' Remove the item fromLookUp  array in case partition backup is run later on the same array...
+            ' Could happen in a mixed selective backup request
+
+            saLookUp(iCnt) = ""
+            isExec = True
+
+        Next
+
+        BackupSelLUNs = True
+
+EXT:
+        CleanUpBackupFolder()
+        ProcessCompletedMsg(isExec Or isDebug)
+
+        obPInfo = Nothing
+
+    End Function
+
+    Private Function CalcBounds(ByRef obPInfo As stPInfo) As Boolean
+
+        Try
+
+            If obPInfo.iLUN = 0 Then
+
+                ' galoLookUp[0][UpperBound-0].sLabel = "grow"
+                ' galoLookUp[0][UpperBound-1].sLabel = "userdata"
+                ' galoLookUp[0][UpperBound-2].sLabel = "OP_b"
+                ' galoLookUp[0][UpperBound-2] = galoLookUp(0).Count - 3
+                ' iB4User: Before Userdata
+
+                ' grow partition in LUN0, comes after userdata. 
+                ' It's the last partition in LUN0.
+                ' Its size is only 1 sector.
+
+                Dim iB4User As UInt16 = galoLookUp(0).Count - 3
+
+                obPInfo.iSectors = galoLookUp(0)(iB4User).iSize
+
+                Return True
+
+            Else
+
+                Dim iCnt As Byte = obPInfo.iLUN
+                Dim iLast As UInt16 = galoLookUp(iCnt).Count - 1
+
+                obPInfo.iSectors = galoLookUp(iCnt)(iLast).iSize
+
+                Return True
+
+            End If
+
+        Catch
+
+            Console.WriteLine(goSpeaker.ID2Msg(35) & obPInfo.iLUN)
+            'Console.ReadKey(True)
+
+            geFailed = ErrorType.ER_FAILD
+
+        End Try
+
+    End Function
+
+    Private Function ValidateLUNNumber( _
+                                      ByRef sLUNNum As String, _
+                                      ByRef iLUNNum As Byte) As Boolean
+
+        If Not Byte.TryParse(sLUNNum, iLUNNum) Then
+
+            Console.WriteLine(goSpeaker.ID2Msg(22) & sLUNNum)
+            Console.WriteLine(goSpeaker.ID2Msg(10))
+
+            If Console.ReadKey(True).Key = ConsoleKey.A Then _
+                geFailed = ErrorType.ER_ABORT ' ByPass ProcessCompletedMsg
+
+            'Console.Clear()
+            Return False
+
+        ElseIf iLUNNum > galoLookUp.Count - 1 Then
+            Console.WriteLine(goSpeaker.ID2Msg(23).Replace("$", iLUNNum) & galoLookUp.Count - 1)
+            Console.WriteLine(goSpeaker.ID2Msg(10))
+
+            If Console.ReadKey(True).Key = ConsoleKey.A Then _
+                geFailed = ErrorType.ER_ABORT ' ByPass ProcessCompletedMsg
+
+            'Console.Clear()
             Return False
 
         End If
@@ -107,49 +197,61 @@ Public Class clsLUNs : Inherits clsHParts
 
     End Function
 
-    Private Function LocateLUN( _
-                              ByRef sBuffer() As String, _
-                              ByVal iCnt As Byte) As Integer
+    Public Function LoadQuickList(ByVal iID As Byte) As String()
 
-        LocateLUN = Array.FindIndex(sBuffer, _
-        Function(x As String) (x.Contains("""last_parti"" physical_partition_number=""" & iCnt)))
+        Dim saTemp() As String
 
-        If LocateLUN = -1 Then
-            Console.WriteLine(goSpeaker.ID2Msg(35) & iCnt)
-            Console.ReadKey(True)
-        End If
+        ' Split entires by "#", each split would respresnt a set of partion labels
+        ' Split by carriage return and remove empty lines (aka double carriage issue)
+        ' vbCrLf.ToArray: Would return an array of 2 elements Cr, Lf
 
-    End Function
-
-    Private Function LocateUserdata(ByRef sBuffer() As String) As Integer
-
-        LocateUserdata = Array.FindIndex(sBuffer, _
-        Function(x As String) (x.Contains("""userdata"" physical_partition_number=""0")))
-
-        If LocateUserdata = -1 Then
-            Console.WriteLine(goSpeaker.ID2Msg(35) & "0")
-            Console.ReadKey(True)
-        End If
+        saTemp = My.Resources.list_vital.Split("#")
+        Return saTemp(iID).Split(vbCrLf.ToCharArray, StringSplitOptions.RemoveEmptyEntries)
 
     End Function
 
-    Private Shadows Function BuildCommand() As String
+    Public Sub SLBackup(ByVal eCode As OPCode)
 
-        ' fh_loader.exe --port=\\.\COM --convertprogram2read --sendimage=lun1_complete.bin --start_sector=0 
-        '--lun=1 --num_sectors=2048 --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs
+        Dim saLookUp() As String = LoadQuickList(eCode)
 
-        Dim sCurLabel As String = getDirWSlash & "lun" & gsLUN & "_complete.bin"
+        BackupSelLUNs(saLookUp)
+        Erase saLookUp
 
-        BuildCommand = "--port=\\.\" & gsCOMPort & _
-                       " --convertprogram2read --sendimage=" & sCurLabel & _
-                       " --start_sector=0" & _
-                       " --lun=" & gsLUN & _
-                       " --num_sectors=" & gsSectors & _
-                       " --noprompt --showpercentagecomplete --zlpawarehost=1 --memoryname=ufs"
+    End Sub
 
-        Console.WriteLine(goSpeaker.ID2Msg(24) & gsLUN & "_complete.bin" & _
-                          " | Sectors: " & gsSectors & vbNewLine)
+    Public Sub SPBackup(ByVal eCode As OPCode)
 
-    End Function
+        Dim saLookUp() As String = LoadQuickList(eCode)
+
+        BackupSelPartitions(saLookUp)
+        Erase saLookUp
+
+    End Sub
+
+    Public Sub ManualBackup()
+
+        Console.Clear()
+        Console.WriteLine(goSpeaker.ID2Msg(49))
+        Console.WriteLine(goSpeaker.ID2Msg(50))
+        Console.WriteLine(goSpeaker.ID2Msg(51) & vbCr)
+        Console.WriteLine(goSpeaker.ID2Msg(52) & vbCrLf)
+
+        Dim sInput As String
+        Dim saParams() As String
+
+        Console.CursorVisible = True
+        sInput = Console.ReadLine()
+        Console.CursorVisible = False
+
+        If sInput = Nothing Then Exit Sub
+
+        saParams = sInput.ToLower.Split(";")
+
+        If BackupSelLUNs(saParams) Then _
+           BackupSelPartitions(saParams)
+
+        Erase saParams
+
+    End Sub
 
 End Class

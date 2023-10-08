@@ -84,14 +84,12 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsDebug.vb" />
+    <Compile Include="clsErase.vb" />
     <Compile Include="clsFlash.vb" />
-    <Compile Include="clsHParts.vb" />
-    <Compile Include="clsHLUNs.vb" />
-    <Compile Include="clsInfo.vb" />
-    <Compile Include="clsInit.vb" />
+    <Compile Include="clsBase.vb" />
     <Compile Include="clsLUNs.vb" />
     <Compile Include="clsMsg.vb" />
-    <Compile Include="clsVital.vb" />
     <Compile Include="clsParts.vb" />
     <Compile Include="modMain.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -164,10 +162,10 @@
     <EmbeddedResource Include="Resources\msg_ru.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\list_boot.txt" />
+    <EmbeddedResource Include="Resources\list_vital.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\list_vital.txt" />
+    <EmbeddedResource Include="Resources\erase_xml.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <ProjectExtensions>

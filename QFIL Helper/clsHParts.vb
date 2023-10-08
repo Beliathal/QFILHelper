@@ -11,6 +11,7 @@ Public Class clsHParts : Inherits clsParts
 
     Public Sub FindHiddenParts()
 
+        'If Not ValidateFiles_Debug() Then Exit Sub
         If Not ValidateFiles() Then Exit Sub
 
         Dim ioSourceFile As StreamReader
@@ -33,7 +34,7 @@ Public Class clsHParts : Inherits clsParts
                 If ParseXML(sBuffer) Then
 
                     ' Conditions to check:
-                    ' 1. Skip checking 1st 6 sectors of every partition, those are GPT tables IMHO
+                    ' 1. Skip checking 1st 6 sectors of every partition, those are GPT tables
                     ' 2. LUN:0, Partiton:0, Sector:?
                     ' 3. Current LUN > Previous LUN ?: Reached partition boundaries
 

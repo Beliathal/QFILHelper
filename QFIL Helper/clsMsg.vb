@@ -9,18 +9,18 @@ Public Class clsMsg
     End Enum
 
     Private gsaMsgData() As String
-    Private gsaMnuData() As String
+    Private glsaMnuData As List(Of String())
     Private geCurLang As Language
     Private isUTF8 As Boolean
 
     Public gbAdvEnabled As Boolean ' Enable advanced options
-    Public gbHdnEnabled As Boolean ' Enable menu entries for hidden partitions & luns
     Public gbNarEnabled As Boolean ' Enable narrow menus
+    Public gbDoCompress As Boolean
+    Public gbDoDebug As Boolean
 
     ' Run programm with arguments:
     '-ru - sets language to Russian ANSI
     '-ru -utf8 - sets language to Russian UTF-8
-    '-hidden - enables hidden partitions and hidden LUN backup functions
     '-advanced - enables flashing of entire LUN
 
     Public Function ParseArguments(ByRef sCurLang() As String) As Boolean
@@ -36,13 +36,14 @@ Public Class clsMsg
 
         For Each sCurArg As String In sCurLang
 
-            Select Case sCurArg
+            Select Case sCurArg.ToLower
 
                 Case "-ru" : geCurLang = Language.RU_Lang
                 Case "-utf8" : isUTF8 = True
                 Case "-advanced" : gbAdvEnabled = True
-                Case "-hidden" : gbHdnEnabled = True
                 Case "-narrow" : gbNarEnabled = True
+                Case "-debug" : gbDoDebug = True
+                Case "-ntfs" : gbDoCompress = True
                 Case "-red" : Console.ForegroundColor = ConsoleColor.Red
 
                 Case Else
@@ -55,7 +56,7 @@ Public Class clsMsg
 
         Next
 
-        If geCurLang = Language.RU_Lang And isUTF8 Then _
+        If geCurLang = Language.RU_Lang AndAlso isUTF8 Then _
              Console.OutputEncoding = Encoding.UTF8 _
         Else Console.OutputEncoding = Encoding.GetEncoding(1251)
 
@@ -77,20 +78,38 @@ Public Class clsMsg
     Private Sub LoadMenus()
 
         Dim saTemp() As String
+        glsaMnuData = New List(Of String())
+
+        ' Split menu entires by "#" (1: advanced menu, 2: simple menu)
+        ' Split by carriage return and remove empty lines (aka double carriage issue)
 
         Select Case geCurLang
             Case Language.EN_Lang : saTemp = My.Resources.menu_en.Split("#")
             Case Language.RU_Lang : saTemp = My.Resources.menu_ru.Split("#")
         End Select
 
-        Select Case gbHdnEnabled
+        Select Case gbAdvEnabled
+
             Case True
-                gsaMnuData = saTemp(0).Split(vbCrLf.ToCharArray, _
-                                             StringSplitOptions.RemoveEmptyEntries)
+                glsaMnuData.Add( _
+                    saTemp(0).Split(vbCrLf.ToCharArray, _
+                                    StringSplitOptions.RemoveEmptyEntries))
             Case False
-                gsaMnuData = saTemp(1).Split(vbCrLf.ToCharArray, _
-                                             StringSplitOptions.RemoveEmptyEntries)
+                glsaMnuData.Add( _
+                    saTemp(1).Split(vbCrLf.ToCharArray, _
+                                    StringSplitOptions.RemoveEmptyEntries))
         End Select
+
+        ' sub menus
+
+        For iCnt As Byte = 1 To saTemp.Count - 1
+
+            glsaMnuData.Add( _
+                saTemp(iCnt).Split( _
+                    vbCrLf.ToCharArray, _
+                    StringSplitOptions.RemoveEmptyEntries))
+
+        Next
 
         saTemp = Nothing
 
@@ -121,18 +140,20 @@ Public Class clsMsg
 
     End Function
 
-    Public Function ID2Menu(ByVal iCurID As Byte) As String
+    Public Function ID2Menu(ByVal iCurMenu As Byte, ByVal iCurID As Byte) As String
+
+        Dim saTemp() = glsaMnuData.Item(iCurMenu)
 
         Select Case geCurLang
-            Case Language.EN_Lang : Return gsaMnuData(iCurID - 1).Replace("@", iCurID)
-            Case Language.RU_Lang : Return TextToANSI(gsaMnuData(iCurID - 1)).Replace("@", iCurID)
+            Case Language.EN_Lang : Return saTemp(iCurID - 1).Replace("@", iCurID)
+            Case Language.RU_Lang : Return TextToANSI(saTemp(iCurID - 1)).Replace("@", iCurID)
         End Select
 
     End Function
 
-    Public ReadOnly Property getMenuCount() As Byte
+    Public ReadOnly Property getMenuCount(ByVal iCurMenu As Byte) As Byte
         Get
-            Return gsaMnuData.Count
+            Return glsaMnuData.Item(iCurMenu).Count
         End Get
     End Property
 
@@ -146,5 +167,13 @@ Public Class clsMsg
         End Get
 
     End Property
+
+    Protected Overrides Sub Finalize()
+
+        glsaMnuData = Nothing
+        Erase gsaMsgData
+        MyBase.Finalize()
+
+    End Sub
 
 End Class

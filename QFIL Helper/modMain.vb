@@ -20,6 +20,7 @@ Imports Microsoft.VisualBasic
 Module modMain
 
     Public goSpeaker As clsMsg ' CMD arguments, errors, warnings, language related settings
+    Private oHelper As New clsDebug
 
     ' Possible args: -advanced -hidden -utf8 -ru -narrow -red
 
@@ -34,7 +35,7 @@ Module modMain
         goSpeaker = New clsMsg
 
         If goSpeaker.ParseArguments(args) Then _
-                If goSpeaker.gbHdnEnabled Then MainMenuFull() _
+                If goSpeaker.gbAdvEnabled Then MainMenuFull() _
                 Else MainMenuSimple()
 
         goSpeaker = Nothing
@@ -44,7 +45,6 @@ Module modMain
 
     Private Sub MainMenuSimple()
 
-        Dim oHelper As New clsFlash
         Dim cCurKey As Char
 
         Do
@@ -52,40 +52,35 @@ Module modMain
             Select Case cCurKey
 
                 Case ""
-                    cCurKey = BuildMenu(False)
+                    cCurKey = BuildMenu(0, False)
 
                 Case "1"
-                    Console.Clear()
-                    oHelper.BackupPartitions()
-                    cCurKey = ""
-
-                Case "2"
                     Console.Clear()
                     oHelper.BackupLUNs()
                     cCurKey = ""
 
+                Case "2"
+                    Console.Clear()
+                    oHelper.BackupPartitions()
+                    cCurKey = ""
+
                 Case "3"
                     Console.Clear()
-                    oHelper.BackupBootParts()
+                    oHelper.BackupUserData()
                     cCurKey = ""
 
                 Case "4"
                     Console.Clear()
-                    oHelper.BackupIMEIParts()
-                    cCurKey = ""
-
-                Case "5"
-                    Console.Clear()
                     oHelper.QueryCOMPorts()
                     cCurKey = ""
 
-                Case "6"
+                Case "5"
                     Console.Clear()
                     oHelper.FlashFirmware()
                     cCurKey = ""
 
                 Case Else
-                    cCurKey = BuildMenu(True)
+                    cCurKey = BuildMenu(0, True)
 
             End Select
 
@@ -97,7 +92,6 @@ Module modMain
 
     Private Sub MainMenuFull()
 
-        Dim oHelper As New clsFlash
         Dim cCurKey As Char
 
         Do
@@ -105,36 +99,36 @@ Module modMain
             Select Case cCurKey
 
                 Case ""
-                    cCurKey = BuildMenu(False)
+                    cCurKey = BuildMenu(0, False)
 
                 Case "1"
-                    Console.Clear()
-                    oHelper.BackupPartitions()
-                    cCurKey = ""
-
-                Case "2"
                     Console.Clear()
                     oHelper.BackupLUNs()
                     cCurKey = ""
 
+                Case "2"
+                    Console.Clear()
+                    oHelper.BackupPartitions()
+                    cCurKey = ""
+
                 Case "3"
                     Console.Clear()
-                    oHelper.FindHiddenParts()
+                    QuickMenuLUNs()
                     cCurKey = ""
 
                 Case "4"
                     Console.Clear()
-                    oHelper.BackupHiddenLUNs()
+                    QuickMenuPartitons()
                     cCurKey = ""
 
                 Case "5"
-                    Console.Clear()
-                    oHelper.BackupBootParts()
+                    Console.Clear()           
+                    oHelper.BackupUserData()
                     cCurKey = ""
 
                 Case "6"
                     Console.Clear()
-                    oHelper.BackupIMEIParts()
+                    QuickMenuErase()
                     cCurKey = ""
 
                 Case "7"
@@ -147,8 +141,13 @@ Module modMain
                     oHelper.FlashFirmware()
                     cCurKey = ""
 
+                Case "d"
+                    Console.Clear()
+                    oHelper.DebugerTester()
+                    cCurKey = ""
+
                 Case Else
-                    cCurKey = BuildMenu(True)
+                    cCurKey = BuildMenu(0, True)
 
             End Select
 
@@ -158,14 +157,200 @@ Module modMain
 
     End Sub
 
-    Private Function BuildMenu(ByVal isError As Boolean) As Char
+    Private Sub QuickMenuPartitons()
+
+        Dim cCurKey As Char
+
+        Do
+
+            Select Case cCurKey
+
+                Case ""
+                    cCurKey = BuildMenu(2, False)
+
+                Case "1"
+                    Console.Clear()
+                    oHelper.SPBackup(clsLUNs.OPCode.ABL)
+                    cCurKey = ""
+
+                Case "2"
+                    Console.Clear()
+                    oHelper.SPBackup(clsLUNs.OPCode.FTM)
+                    cCurKey = ""
+
+                Case "3"
+                    Console.Clear()
+                    oHelper.SPBackup(clsLUNs.OPCode.SYSA)
+                    cCurKey = ""
+
+                Case "4"
+                    Console.Clear()
+                    oHelper.SPBackup(clsLUNs.OPCode.SYSB)
+                    cCurKey = ""
+
+                Case "5"
+                    Console.Clear()
+                    oHelper.DumpGTP()
+                    cCurKey = ""
+
+                Case "6"
+                    Console.Clear()
+                    oHelper.ManualBackup()
+                    cCurKey = ""
+
+                Case Else
+                    cCurKey = BuildMenu(2, True)
+
+            End Select
+
+        Loop Until cCurKey = "Q" OrElse cCurKey = "q"
+
+    End Sub
+
+    Private Sub QuickMenuLUNs()
+
+        Dim cCurKey As Char
+
+        Do
+
+            Select Case cCurKey
+
+                Case ""
+                    cCurKey = BuildMenu(3, False)
+
+                Case "1"
+                    Console.Clear()
+                    oHelper.SLBackup(clsLUNs.OPCode.LUN16)
+                    cCurKey = ""
+
+                Case "2"
+                    Console.Clear()
+                    oHelper.BackupSelLUNs({"lun0"})
+                    cCurKey = ""
+
+                Case "3"
+                    Console.Clear()
+                    oHelper.BackupSelLUNs({"lun4"})
+                    cCurKey = ""
+
+                Case "4"
+                    Console.Clear()
+                    oHelper.ManualBackup()
+                    cCurKey = ""
+
+                Case Else
+                    cCurKey = BuildMenu(3, True)
+
+            End Select
+
+        Loop Until cCurKey = "Q" OrElse cCurKey = "q"
+
+    End Sub
+
+    Private Sub QuickMenuErase()
+
+        Dim cCurKey As Char
+
+        Do
+
+            Select Case cCurKey
+
+                Case ""
+                    cCurKey = BuildMenu(4, False)
+
+                Case "1"
+                    Console.Clear()
+                    oHelper.SPErase(clsLUNs.OPCode.SID)
+                    cCurKey = ""
+
+                Case "2"
+                    Console.Clear()
+                    oHelper.ManualErase()
+                    cCurKey = ""
+
+                Case Else
+                    cCurKey = BuildMenu(4, True)
+
+            End Select
+
+        Loop Until cCurKey = "Q" OrElse cCurKey = "q"
+
+    End Sub
+
+    Private Sub SelectiveMenu()
+
+        Dim cCurKey As Char
+
+        Do
+
+            Select Case cCurKey
+
+                Case ""
+                    cCurKey = BuildMenu(2, False)
+
+                Case "1"
+                    Console.Clear()
+                    oHelper.BackupSelPartitions(oHelper.LoadQuickList(1))
+                    cCurKey = ""
+
+                Case "2"
+                    Console.Clear()
+                    oHelper.BackupSelPartitions(oHelper.LoadQuickList(0))
+                    cCurKey = ""
+
+                Case "3"
+                    Console.Clear()
+                    oHelper.BackupSelPartitions(oHelper.LoadQuickList(2))
+                    cCurKey = ""
+
+                Case "4"
+                    Console.Clear()
+                    oHelper.BackupSelPartitions(oHelper.LoadQuickList(3))
+                    cCurKey = ""
+
+                Case "5"
+                    Console.Clear()
+                    oHelper.BackupSelLUNs(oHelper.LoadQuickList(5))
+                    cCurKey = ""
+
+                Case "6"
+                    Console.Clear()
+                    oHelper.BackupSelLUNs({"lun0"})
+                    cCurKey = ""
+
+                Case "7"
+                    Console.Clear()
+                    oHelper.BackupSelLUNs({"lun4"})
+                    cCurKey = ""
+
+                Case "8"
+                    Console.Clear()
+                    cCurKey = ""
+
+                Case "9"
+                    Console.Clear()
+                    cCurKey = ""
+
+                Case Else
+                    cCurKey = BuildMenu(2, True)
+
+            End Select
+
+        Loop Until cCurKey = "Q" OrElse cCurKey = "q"
+
+    End Sub
+
+    Private Function BuildMenu(ByVal iMenu As Byte, ByVal isError As Boolean) As Char
 
         Console.Clear()
         Console.WriteLine(goSpeaker.getTitleLine & vbCrLf)
 
-        For iCnt As Byte = 1 To goSpeaker.getMenuCount
-            'Console.WriteLine(goSpeaker.ID2Menu(iCnt) & vbCrLf)
-            Console.WriteLine(goSpeaker.ID2Menu(iCnt) & IIf(goSpeaker.gbNarEnabled, "", vbCrLf))
+        For iCnt As Byte = 1 To goSpeaker.getMenuCount(iMenu)
+
+            Console.WriteLine( _
+                goSpeaker.ID2Menu(iMenu, iCnt) & IIf( _
+                    goSpeaker.gbNarEnabled, "", vbCrLf))
+
         Next
 
         If isError Then Console.Write(goSpeaker.ID2Msg(25))
