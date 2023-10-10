@@ -1,11 +1,13 @@
 ﻿Imports System.IO
 Imports System.Text
 Imports Microsoft.VisualBasic
+Imports System.Globalization
 
 Public Class clsMsg
     Private Enum Language As Byte
-        EN_Lang = 0
-        RU_Lang = 1
+        ZH_Lang = 0
+        EN_Lang = 1
+        RU_Lang = 2
     End Enum
 
     Private gsaMsgData() As String
@@ -24,15 +26,21 @@ Public Class clsMsg
     '-advanced - enables flashing of entire LUN
 
     Public Function ParseArguments(ByRef sCurLang() As String) As Boolean
+        Dim lcid As Integer = CultureInfo.InstalledUICulture.LCID
 
-        If sCurLang.Length = 0 Then
 
-            geCurLang = Language.EN_Lang
-            LoadMessages()
-            LoadMenus()
-            Return True
-
+        If lcid = 2052 Then
+            geCurLang = Language.ZH_Lang   '中文简体
+            Console.OutputEncoding = Encoding.UTF8
+        ElseIf lcid = 1049 Then
+            geCurLang = Language.RU_Lang   '俄语
+            Console.OutputEncoding = Encoding.UTF8
+        Else : geCurLang = Language.EN_Lang
+            Console.OutputEncoding = Encoding.GetEncoding(1251)
         End If
+        Debug.WriteLine(“Language code：” & lcid)
+
+
 
         For Each sCurArg As String In sCurLang
 
@@ -56,10 +64,6 @@ Public Class clsMsg
 
         Next
 
-        If geCurLang = Language.RU_Lang AndAlso isUTF8 Then _
-             Console.OutputEncoding = Encoding.UTF8 _
-        Else Console.OutputEncoding = Encoding.GetEncoding(1251)
-
         LoadMessages()
         LoadMenus()
         Return True
@@ -69,6 +73,7 @@ Public Class clsMsg
     Private Sub LoadMessages()
 
         Select Case geCurLang
+            Case Language.ZH_Lang : gsaMsgData = My.Resources.msg_zh.Split(vbCrLf)
             Case Language.EN_Lang : gsaMsgData = My.Resources.msg_en.Split(vbCrLf)
             Case Language.RU_Lang : gsaMsgData = My.Resources.msg_ru.Split(vbCrLf)
         End Select
@@ -84,6 +89,7 @@ Public Class clsMsg
         ' Split by carriage return and remove empty lines (aka double carriage issue)
 
         Select Case geCurLang
+            Case Language.ZH_Lang : saTemp = My.Resources.menu_zh.Split("#")
             Case Language.EN_Lang : saTemp = My.Resources.menu_en.Split("#")
             Case Language.RU_Lang : saTemp = My.Resources.menu_ru.Split("#")
         End Select
@@ -134,6 +140,7 @@ Public Class clsMsg
     Public Function ID2Msg(ByVal iCurID As Byte) As String
 
         Select Case geCurLang
+            Case Language.ZH_Lang : Return gsaMsgData(iCurID - 1)
             Case Language.EN_Lang : Return gsaMsgData(iCurID - 1)
             Case Language.RU_Lang : Return TextToANSI(gsaMsgData(iCurID - 1))
         End Select
@@ -145,6 +152,7 @@ Public Class clsMsg
         Dim saTemp() = glsaMnuData.Item(iCurMenu)
 
         Select Case geCurLang
+            Case Language.ZH_Lang : Return saTemp(iCurID - 1).Replace("@", iCurID)
             Case Language.EN_Lang : Return saTemp(iCurID - 1).Replace("@", iCurID)
             Case Language.RU_Lang : Return TextToANSI(saTemp(iCurID - 1)).Replace("@", iCurID)
         End Select
