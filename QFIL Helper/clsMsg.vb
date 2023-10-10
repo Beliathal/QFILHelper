@@ -28,6 +28,21 @@ Public Class clsMsg
     Public Function ParseArguments(ByRef sCurLang() As String) As Boolean
         Dim lcid As Integer = CultureInfo.InstalledUICulture.LCID
 
+        ' command line usage example for Chinese Simplified UTF8 with advanced settings:
+        ' -advanced -NTFS -zh -utf8
+
+        ' command line usage example for Russian UTF8 with advanced settings:
+        ' -advanced -NTFS -ru -utf8
+
+        ' command line usage example for Russian ASCII (codepage 1251) with advanced settings:
+        ' -advanced -NTFS -ru
+
+        ' command line usage example for Chinese Simplified ASCII (codepage 936) with advanced settings:
+        ' -advanced -NTFS -zh
+
+        ' NOTE: codepage 936 will work only after registering System.Text.Encoding.CodePages
+        ' reference to: https://www.cnblogs.com/artech/p/encoding-registeration-4-net-core.html
+
 
         If lcid = 2052 Then
             geCurLang = Language.ZH_Lang   '中文简体
@@ -35,11 +50,9 @@ Public Class clsMsg
         ElseIf lcid = 1049 Then
             geCurLang = Language.RU_Lang   '俄语
             Console.OutputEncoding = Encoding.UTF8
-        Else : geCurLang = Language.EN_Lang
-            Console.OutputEncoding = Encoding.GetEncoding(1251)
         End If
-        Debug.WriteLine(“Language code：” & lcid)
 
+        'Debug.WriteLine("Language code：" & lcid)
 
 
         For Each sCurArg As String In sCurLang
@@ -47,6 +60,7 @@ Public Class clsMsg
             Select Case sCurArg.ToLower
 
                 Case "-ru" : geCurLang = Language.RU_Lang
+                Case "-zh" : geCurLang = Language.ZH_Lang
                 Case "-utf8" : isUTF8 = True
                 Case "-advanced" : gbAdvEnabled = True
                 Case "-narrow" : gbNarEnabled = True
@@ -63,6 +77,17 @@ Public Class clsMsg
             End Select
 
         Next
+
+        If isUTF8 Then
+            Console.OutputEncoding = Encoding.UTF8
+        Else
+
+            Select Case geCurLang
+                Case Language.ZH_Lang : Console.OutputEncoding = Encoding.GetEncoding(936)
+                Case Language.RU_Lang : Console.OutputEncoding = Encoding.GetEncoding(1251)
+            End Select
+
+        End If
 
         LoadMessages()
         LoadMenus()
@@ -126,7 +151,12 @@ Public Class clsMsg
         If isUTF8 Then Return sCurText
 
         Dim oUnicode As Encoding = Encoding.Unicode
-        Dim oASCII As Encoding = Encoding.GetEncoding(1251)
+        Dim oASCII As Encoding = Encoding.Default
+
+        Select Case geCurLang
+            Case Language.ZH_Lang : oASCII = Encoding.GetEncoding(936)
+            Case Language.RU_Lang : oASCII = Encoding.GetEncoding(1251)
+        End Select
 
         Dim iaUnicode As Byte() = oUnicode.GetBytes(sCurText)
         Dim iaASCII As Byte() = Encoding.Convert(oUnicode, oASCII, iaUnicode)
@@ -140,7 +170,7 @@ Public Class clsMsg
     Public Function ID2Msg(ByVal iCurID As Byte) As String
 
         Select Case geCurLang
-            Case Language.ZH_Lang : Return gsaMsgData(iCurID - 1)
+            Case Language.ZH_Lang : Return TextToANSI(gsaMsgData(iCurID - 1))
             Case Language.EN_Lang : Return gsaMsgData(iCurID - 1)
             Case Language.RU_Lang : Return TextToANSI(gsaMsgData(iCurID - 1))
         End Select
