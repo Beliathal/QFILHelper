@@ -10,3 +10,9 @@ GPT Edition Update (beta testing)
 <li>	Added option to manually specify what partitions/LUNs to backup </li>
 <li>	Beta test: Most of the functions were tested, but some bugs may still be present </li>
 </ul>
+
+12/10/2023
+<ul>
+<li>	Chinese translation kindly added by wellqrg </li>
+<li>	To run the app with Chinese support, please use this command line: QFILHelper.exe -zh -utf8</li>
+</ul>
