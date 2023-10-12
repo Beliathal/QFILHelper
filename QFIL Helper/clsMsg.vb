@@ -43,18 +43,6 @@ Public Class clsMsg
         ' NOTE: codepage 936 will work only after registering System.Text.Encoding.CodePages
         ' reference to: https://www.cnblogs.com/artech/p/encoding-registeration-4-net-core.html
 
-
-        If lcid = 2052 Then
-            geCurLang = Language.ZH_Lang   '中文简体
-            Console.OutputEncoding = Encoding.UTF8
-        ElseIf lcid = 1049 Then
-            geCurLang = Language.RU_Lang   '俄语
-            Console.OutputEncoding = Encoding.UTF8
-        End If
-
-        'Debug.WriteLine("Language code：" & lcid)
-
-
         For Each sCurArg As String In sCurLang
 
             Select Case sCurArg.ToLower
@@ -83,7 +71,8 @@ Public Class clsMsg
         Else
 
             Select Case geCurLang
-                Case Language.ZH_Lang : Console.OutputEncoding = Encoding.GetEncoding(936)
+                'Case Language.ZH_Lang : Console.OutputEncoding = Encoding.GetEncoding(936)
+                Case Language.ZH_Lang : Console.OutputEncoding = Encoding.UTF8
                 Case Language.RU_Lang : Console.OutputEncoding = Encoding.GetEncoding(1251)
             End Select
 
