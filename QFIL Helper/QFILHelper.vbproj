@@ -167,10 +167,16 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\erase_xml.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\menu_zh.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\msg_zh.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties VsiSettingsState="Initialized" VsiUseTimeUtc="UseGlobal" VsiDeltaBaseDate="11/07/2022 12:57:31" VsiUseGlobalBaseDate="True" VsiConfigurationBuildAction="True.True.True.True.UseGlobal.UseGlobal" VsiAutoInformationalVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoFileVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiEnabled="True" />
+      <UserProperties VsiEnabled="True" VsiAutoVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoFileVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiAutoInformationalVersion="UseGlobalSettings.UseGlobalSettings.UseGlobalSettings.Increment" VsiConfigurationBuildAction="True.True.True.True.UseGlobal.UseGlobal" VsiUseGlobalBaseDate="True" VsiDeltaBaseDate="11/07/2022 12:57:31" VsiUseTimeUtc="UseGlobal" VsiSettingsState="Initialized" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
