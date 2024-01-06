@@ -47,8 +47,12 @@ Public Class clsMsg
 
             Select Case sCurArg.ToLower
 
+                ' 2024-01-06: -en option was missing, as result the app would run in 
+                ' Chinese when no arguments supplied at the command line
+
                 Case "-ru" : geCurLang = Language.RU_Lang
                 Case "-zh" : geCurLang = Language.ZH_Lang
+                Case "-en" : geCurLang = Language.EN_Lang
                 Case "-utf8" : isUTF8 = True
                 Case "-advanced" : gbAdvEnabled = True
                 Case "-narrow" : gbNarEnabled = True
