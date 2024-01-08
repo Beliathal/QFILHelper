@@ -24,6 +24,7 @@ Public Class clsMsg
     '-ru - sets language to Russian ANSI
     '-ru -utf8 - sets language to Russian UTF-8
     '-advanced - enables flashing of entire LUN
+    '-advanced -NTFS -zh -utf8 - run in Chinese with advanced options
 
     Public Function ParseArguments(ByRef sCurLang() As String) As Boolean
         Dim lcid As Integer = CultureInfo.InstalledUICulture.LCID
@@ -43,6 +44,9 @@ Public Class clsMsg
         ' NOTE: codepage 936 will work only after registering System.Text.Encoding.CodePages
         ' reference to: https://www.cnblogs.com/artech/p/encoding-registeration-4-net-core.html
 
+        ' If no arguments provided, set default mode to english
+        geCurLang = Language.EN_Lang
+
         For Each sCurArg As String In sCurLang
 
             Select Case sCurArg.ToLower
@@ -52,7 +56,6 @@ Public Class clsMsg
 
                 Case "-ru" : geCurLang = Language.RU_Lang
                 Case "-zh" : geCurLang = Language.ZH_Lang
-                Case "-en" : geCurLang = Language.EN_Lang
                 Case "-utf8" : isUTF8 = True
                 Case "-advanced" : gbAdvEnabled = True
                 Case "-narrow" : gbNarEnabled = True
