@@ -393,39 +393,134 @@ SKIP:
 
     Protected Function LookUpNames(ByRef obPInfo As stPInfo) As Boolean
 
-        Dim iLBound, iUBound As Byte
+        ' Updated on: 08/01/2024
+        Try
 
-        Dim sLabel As String = _
-            obPInfo.sLabel.ToLower
+            Dim iLBound, iUBound As Byte
 
-        If obPInfo.iLUN.HasValue Then
+            Dim sLabel As String = _
+                obPInfo.sLabel.ToLower
 
-            iLBound = obPInfo.iLUN
-            iUBound = obPInfo.iLUN
+            If obPInfo.iLUN.HasValue Then
 
-        Else
+                iLBound = obPInfo.iLUN
+                iUBound = obPInfo.iLUN
 
-            iLBound = 0
-            iUBound = galoLookUp.Count - 1
+            Else
 
-        End If
+                iLBound = 0
+                iUBound = galoLookUp.Count - 1
 
-        For iCnt As Byte = iLBound To iUBound
+            End If
 
-            For iCnt2 As UInt16 = 0 To galoLookUp(iCnt).Count - 1
+            For iCnt As Byte = iLBound To iUBound
 
-                If sLabel = galoLookUp(iCnt)(iCnt2).sLabel Then
+                For iCnt2 As UInt16 = 0 To galoLookUp(iCnt).Count - 1
 
-                    obPInfo = galoLookUp(iCnt)(iCnt2)
-                    Return True
+                    If sLabel = galoLookUp(iCnt)(iCnt2).sLabel Then
 
-                End If
+                        obPInfo = galoLookUp(iCnt)(iCnt2)
+                        Return True
+
+                    End If
+
+                Next
 
             Next
 
-        Next
+            Return False
 
-        Return False
+        Catch
+
+            ' s4704 reported a crash with BufferOverFlow in this function. 
+            ' I've double checked it with my phone and with s4704's GPT headers from Motorola Edge X30
+            ' in debug/emulation mode... Didn't get any issues :( Decided to add this piece of code
+            ' to further investigate this matter.
+
+            Dim ioOutputFile As StreamWriter
+            ioOutputFile = File.AppendText("errors.txt")
+
+            ioOutputFile.WriteLine("Error occured in LookUpNames:" & Err.Description)
+            ioOutputFile.WriteLine("Switching to fallback function...")
+            ioOutputFile.Close()
+            ioOutputFile = Nothing
+
+            ' Return false on error
+            Return FallBackBinary(obPInfo)
+
+        End Try
+
+
+    End Function
+
+    ' Added on: 08/01/2024
+    ' For testing Motorola Issue
+
+    Private Function FallBackBinary(ByRef obPInfo As stPInfo) As Boolean
+
+        Try
+
+            Dim iLBound, iUBound As Byte
+            Dim iLow, iMid, iHigh As Int16
+
+            Dim sLookUp As String
+
+            Dim sLabel As String = _
+                obPInfo.sLabel.ToLower
+
+            If obPInfo.iLUN.HasValue Then
+
+                iLBound = obPInfo.iLUN
+                iUBound = obPInfo.iLUN
+
+            Else
+
+                iLBound = 0
+                iUBound = galoLookUp.Count - 1
+
+            End If
+
+            For iCnt As Byte = iLBound To iUBound
+
+                iLow = 0
+                iMid = 0
+                iHigh = galoLookUp(iCnt).Count - 1
+
+                Do Until iLow > iHigh
+
+                    iMid = (iHigh + iLow) / 2
+
+                    sLookUp = galoLookUp(iCnt)(iMid).sLabel.ToLower
+
+                    If sLabel = sLookUp Then
+
+                        obPInfo = galoLookUp(iCnt)(iMid) : Return True
+
+                    ElseIf sLabel > sLookUp Then : iLow = iMid + 1
+                    Else : iHigh = iMid - 1
+
+                    End If
+
+                Loop
+
+            Next
+
+            Return False
+
+        Catch
+
+            Dim ioOutputFile As StreamWriter
+            ioOutputFile = File.AppendText("errors.txt")
+
+            ioOutputFile.WriteLine("Error occured in FallBackLookUpNames:" & Err.Description)
+            ioOutputFile.Close()
+            ioOutputFile = Nothing
+
+            ' Return false on error
+            Return False
+
+        End Try
+
 
     End Function
 
