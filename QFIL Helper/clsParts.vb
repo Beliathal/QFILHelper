@@ -396,6 +396,7 @@ SKIP:
         ' Updated on: 08/01/2024
         Try
 
+
             Dim iLBound, iUBound As Byte
 
             Dim sLabel As String = _
@@ -415,7 +416,19 @@ SKIP:
 
             For iCnt As Byte = iLBound To iUBound
 
-                For iCnt2 As UInt16 = 0 To galoLookUp(iCnt).Count - 1
+                ' Updated on: 09/01/2024
+                ' Fix For Motorola Edge 30:
+
+                ' Checnged:
+                ' For iCnt2 As UInt16 = 0 To galoLookUp(iCnt).Count - 1
+
+                ' To:
+                ' For iCnt2 As Int16 = 0 To galoLookUp(iCnt).Count - 1
+
+                ' LUN6 has no partitions, so galoLookUp(6) = 0,
+                ' which in turn would cause bufer overflow, since 0-1=-1
+
+                For iCnt2 As Int16 = 0 To galoLookUp(iCnt).Count - 1
 
                     If sLabel = galoLookUp(iCnt)(iCnt2).sLabel Then
 
@@ -432,11 +445,6 @@ SKIP:
 
         Catch
 
-            ' s4704 reported a crash with BufferOverFlow in this function. 
-            ' I've double checked it with my phone and with s4704's GPT headers from Motorola Edge X30
-            ' in debug/emulation mode... Didn't get any issues :( Decided to add this piece of code
-            ' to further investigate this matter.
-
             Dim ioOutputFile As StreamWriter
             ioOutputFile = File.AppendText("errors.txt")
 
@@ -445,7 +453,6 @@ SKIP:
             ioOutputFile.Close()
             ioOutputFile = Nothing
 
-            ' Return false on error
             Return FallBackBinary(obPInfo)
 
         End Try
