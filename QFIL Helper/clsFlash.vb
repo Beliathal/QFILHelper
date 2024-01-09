@@ -68,7 +68,12 @@ Public Class clsFlash : Inherits clsLUNs
             obPInfo = Nothing
             sFileName = getFileName(sFileName)
 
-            If Regex.IsMatch(sFileName, "lun\d\w+\.bin") Then
+            ' Updated on: 09/01/2024
+
+            ' Changed: lun\d\w+\.bin to lun\d\S+\.bin
+            ' Issue: was too seelpy, sould've used S+ to begin with :(
+
+            If Regex.IsMatch(sFileName, "lun\d\S+\.bin") Then
                 obPInfo.iLUN = getLUN(sFileName)
                 obPInfo.sLabel = getLabel(sFileName)
             Else
