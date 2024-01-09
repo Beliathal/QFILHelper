@@ -37,7 +37,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <li>	Enables NTFS compression: -NTFS </li>
 </ul>
 
-◆ GPT Edition Update (beta testing)
+◆ GPT (GGUID Partition Table) Edition Update
 <ul>
 <li>	PartitionsList.xml no longer needed </li>
 <li>	LUN and partition info is pulled directly from the GPT headers </li>
@@ -47,10 +47,18 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <li>	Added userdata backup (with compression enabled, takes at-least 40 mins on a "good" hardware) </li>
 <li>	Added option to erase partitions (not fully tested) </li>
 <li>	Added option to manually specify what partitions/LUNs to backup </li>
-<li>	Beta test: Most of the functions were tested, but some bugs may still be present </li>
 </ul>
 
 <hr>
+
+<b>How to use:</b>
+<ul>
+<li>Connect your phone to the PC in EDL mode</li>
+<li>Launch QFIL and open Partition Manager</li>
+<li>Click on "Save Partition File"</li>
+<li>Leave QFIL running with Partition Manager open</li>
+<li>Run QFIL helper</li>
+</ul>
 
 <b>Things to remember:</b>
 
@@ -73,32 +81,11 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 	
 <hr>
 
-<i>v1.0.0.61 was tested sucefully with:</i>
+<i>Tested  with:</i>
 
-	Android 9, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
+	LG V45, V50, V60, G8S, G8X
 
-<i>Update: 19-07-2022, v1.0.0.377: Tested sucefully with:</i>
-
-	Android 10, LG V450PM, Qualcomm USB Driver v1.00.37, QPST v2.7.496. 
-	
-<i>Update: 21-02-2023, v1.0.1.14b: Tested sucefully with:</i>
-
-	Android 10/11/12, LG V50/G8S/G8X, Qualcomm USB Driver v1.00.57, QPST v2.7.496. 	
-	
 <hr>
-
-GPT Edition Update
-<ul>
-<li>	PartitionsList.xml no longer needed </li>
-<li>	LUN and partition info is pulled directly from the GPT headers </li>
-<li>	The app now has access to all the info about hidden partitions and LUNs </li>
-<li>	Backward compatibility with back-ups created with previous veriouns (except for hidden partitions/LUNs) </li>
-<li>	Added optional NTFS compression: - NTFS </li>
-<li>	Added userdata backup (with compression enabled, takes at-least 40 mins on a "good" hardware) </li>
-<li>	Added option to erase partitions (not fully tested) </li>
-<li>	Added option to manually specify what partitions/LUNs to backup </li>
-<li>	Beta test: Most of the functions were tested, but some bugs may still be present </li>
-</ul>
 
 12/10/2023
 <ul>
@@ -109,16 +96,7 @@ GPT Edition Update
 09/01/2024
 <ul>
 <li>	Motorola Edge 30 support added </li>
-<li>	Many thanks s4704 for testing the app and providing GPT headers for device emulation </li>
-</ul>
-
-<b>How to use:</b>
-<ul>
-<li>Connect your phone to the PC in EDL mode</li>
-<li>Launch QFIL and open Partition Manager</li>
-<li>Click on "Save Partition File"</li>
-<li>Leave QFIL running with Partition Manager open</li>
-<li>Run QFIL helper</li>
+<li>	Many thanks to s4704 for testing the app and providing GPT headers for device emulation </li>
 </ul>
 
 <hr>
