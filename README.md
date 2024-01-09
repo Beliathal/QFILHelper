@@ -106,7 +106,7 @@ GPT Edition Update
 <li>	To run the app with Chinese support, please use this command line: QFILHelper.exe -zh -utf8</li>
 </ul>
 
-09/01/2023
+09/01/2024
 <ul>
 <li>	Motorola Edge 30 support added </li>
 <li>	Many thanks s4704 for testing the app and providing GPT headers for device emulation </li>
