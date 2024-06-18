@@ -2,8 +2,6 @@
 
 While researching this subject, I've stumbled upon [this guide](https://forum.xda-developers.com/t/tutorial-full-flash-backup-and-restore.4362809/) explaining in great detail how to use fh_loader.exe supplied within QFIL (QPST) utility. Then I've decided to take it one step further and automate the entire process…
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F4W9DQ6)
-
 <hr>
 
 <b>Features:</b>
@@ -88,6 +86,12 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 	LG V45, V50, V60, G8S, G8X
 
 <hr>
+
+18/06/2024
+<ul>
+<li>	Japanese translation kindly provided by reindex-ot </li>
+<li>	To run the app with Japanese support, please use this command line: QFILHelper.exe -ja -utf8</li>
+</ul>
 
 12/10/2023
 <ul>
