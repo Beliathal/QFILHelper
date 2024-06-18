@@ -8,6 +8,7 @@ Public Class clsMsg
         ZH_Lang = 0
         EN_Lang = 1
         RU_Lang = 2
+        JA_Lang = 3
     End Enum
 
     Private gsaMsgData() As String
@@ -56,6 +57,7 @@ Public Class clsMsg
 
                 Case "-ru" : geCurLang = Language.RU_Lang
                 Case "-zh" : geCurLang = Language.ZH_Lang
+                Case "-ja" : geCurLang = Language.JA_Lang
                 Case "-utf8" : isUTF8 = True
                 Case "-advanced" : gbAdvEnabled = True
                 Case "-narrow" : gbNarEnabled = True
@@ -80,6 +82,7 @@ Public Class clsMsg
             Select Case geCurLang
                 'Case Language.ZH_Lang : Console.OutputEncoding = Encoding.GetEncoding(936)
                 Case Language.ZH_Lang : Console.OutputEncoding = Encoding.UTF8
+                Case Language.JA_Lang : Console.OutputEncoding = Encoding.UTF8
                 Case Language.RU_Lang : Console.OutputEncoding = Encoding.GetEncoding(1251)
             End Select
 
@@ -97,6 +100,7 @@ Public Class clsMsg
             Case Language.ZH_Lang : gsaMsgData = My.Resources.msg_zh.Split(vbCrLf)
             Case Language.EN_Lang : gsaMsgData = My.Resources.msg_en.Split(vbCrLf)
             Case Language.RU_Lang : gsaMsgData = My.Resources.msg_ru.Split(vbCrLf)
+            Case Language.JA_Lang : gsaMsgData = My.Resources.msg_ja.Split(vbCrLf)
         End Select
 
     End Sub
@@ -113,6 +117,7 @@ Public Class clsMsg
             Case Language.ZH_Lang : saTemp = My.Resources.menu_zh.Split("#")
             Case Language.EN_Lang : saTemp = My.Resources.menu_en.Split("#")
             Case Language.RU_Lang : saTemp = My.Resources.menu_ru.Split("#")
+            Case Language.JA_Lang : saTemp = My.Resources.menu_ja.Split("#")
         End Select
 
         Select Case gbAdvEnabled
@@ -151,6 +156,7 @@ Public Class clsMsg
 
         Select Case geCurLang
             Case Language.ZH_Lang : oASCII = Encoding.GetEncoding(936)
+            Case Language.JA_Lang : oASCII = Encoding.GetEncoding(932)
             Case Language.RU_Lang : oASCII = Encoding.GetEncoding(1251)
         End Select
 
@@ -169,6 +175,7 @@ Public Class clsMsg
             Case Language.ZH_Lang : Return TextToANSI(gsaMsgData(iCurID - 1))
             Case Language.EN_Lang : Return gsaMsgData(iCurID - 1)
             Case Language.RU_Lang : Return TextToANSI(gsaMsgData(iCurID - 1))
+            Case Language.JA_Lang : Return TextToANSI(gsaMsgData(iCurID - 1))
         End Select
 
     End Function
@@ -181,6 +188,7 @@ Public Class clsMsg
             Case Language.ZH_Lang : Return saTemp(iCurID - 1).Replace("@", iCurID)
             Case Language.EN_Lang : Return saTemp(iCurID - 1).Replace("@", iCurID)
             Case Language.RU_Lang : Return TextToANSI(saTemp(iCurID - 1)).Replace("@", iCurID)
+            Case Language.JA_Lang : Return saTemp(iCurID - 1).Replace("@", iCurID)
         End Select
 
     End Function
