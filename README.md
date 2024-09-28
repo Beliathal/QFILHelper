@@ -22,7 +22,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 ◆ Detect connected COM ports
 <ul>
-<li>	QFIL Helper will continiously query Windows for all connected devices.</li>
+<li>	QFIL Helper will continuously query Windows for all connected devices.</li>
 <li>	If Qualcomm HS-USB QDLoader 9008 is detected, then your phone is connected in EDL mode.</li>
 </ul>
 
@@ -57,7 +57,6 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 <ul>
 <li>Connect your phone to the PC in EDL mode</li>
 <li>Launch QFIL and open Partition Manager</li>
-<li>Click on "Save Partition File"</li>
 <li>Leave QFIL running with Partition Manager open</li>
 <li>Run QFIL helper</li>
 </ul>
@@ -85,7 +84,7 @@ While researching this subject, I've stumbled upon [this guide](https://forum.xd
 
 <i>Tested  with:</i>
 
-	LG V45, V50, V60, G8S, G8X
+	LG V45, V50, V50S, V60, G8, G8S, G8X, Samsung Galaxy A52s
 
 <hr>
 
